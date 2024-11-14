@@ -1,0 +1,38 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgb(255, 255, 255);
+    
+}
+
+.navbar-left, .navbar-links, .navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-links a{
+    margin: 0 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 15px;
+}
+
+.brand{
+    font-weight: bold;
+    font-size: 30px;
+    text-decoration: none;
+    color: black;
+}
+.cart{
+    margin-left: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.navbar-right span{
+    margin-left: 10px;
+}
+
+ 
