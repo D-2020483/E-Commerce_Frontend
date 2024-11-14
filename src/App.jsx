@@ -22,9 +22,9 @@ function App() {
 
   return (
     <div>
-      <Navbar/>
-      {/*<Navigation name={name} cartCount={cartCount}/>*/}
-      {/*<Hero/>
+      {/*<Navbar/>*/}
+      <Navigation name={name} cartCount={cartCount}/>
+      <Hero/>
       <div className="p-4">
         <Button>Buy Now</Button>
       </div>
@@ -43,7 +43,7 @@ function App() {
       <Input/>
       </Card>
       <Progress value={20} />
-      </div>*/}
+      </div>
     </div>
   );
 }
