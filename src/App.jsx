@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import Products from './Products';
 
 function App() {
   const name = "Dinithi";
@@ -25,25 +26,7 @@ function App() {
       {/*<Navbar/>*/}
       <Navigation name={name} cartCount={cartCount}/>
       <Hero/>
-      <div className="p-4">
-        <Button>Buy Now</Button>
-      </div>
-      <div className="p-4">
-      <Card className=" p-4 w-96 border-spacing-1">
-         <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-        </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
-      <Input/>
-      </Card>
-      <Progress value={20} />
-      </div>
+      <Products/>
     </div>
   );
 }

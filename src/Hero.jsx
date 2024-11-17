@@ -1,7 +1,8 @@
 
 function Hero() {
   return (
-    <section className="p-8 mx-16">
+    <section className="p-8 py-8
+    ">
       <div className="grid grid-cols-2 rounded-md min-h-full bg-blue-50">
         <div className="flex flex-col justify-center p-16 gap-4">
           <span className="inline-block rounded-full px-2 text-sm w-fit bg-yellow-500">WEEKLY DISCOUNT</span>
