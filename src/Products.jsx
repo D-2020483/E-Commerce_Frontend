@@ -89,14 +89,28 @@ function Products() {
   ];
 
   const [selectedCategoryId, setSelectedCategoryId] = useState("1");
+  const [sortOrder, setSortOrder] = useState("ascending")
+
+
   const filteredProducts =
     selectedCategoryId === "ALL"
       ? products
       : products.filter((product) => product.categoryId === selectedCategoryId);
 
-    const handleTabClick = (_id) => {
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+        const priceA = parseFloat(a.price);
+        const priceB = parseFloat(b.price);
+        return sortOrder === "ascending" ? priceA - priceB : priceB - priceA;
+      });
+
+  const handleTabClick = (_id) => {
         setSelectedCategoryId(_id)
     }
+
+  const handleSort = (order) => {
+        setSortOrder(order);
+      };
 
   return (
     <section className="px-8 py-8">
@@ -113,7 +127,21 @@ function Products() {
           />
         ))}
       </div>
-      <ProductCards products={filteredProducts} />
+      {/*Sort Button*/}
+      <div className="flex gap-4 mt-4">
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          onClick={() => handleSort("ascending")}>
+          Sort by Price: Ascending
+        </button>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          onClick={() => handleSort("descending")}>
+          Sort by Price: Descending
+        </button>
+      </div>
+
+      <ProductCards products={sortedProducts} />
     </section>
   );
 }
