@@ -19,8 +19,6 @@ function App() {
   const name = "Dinithi";
   const cartCount = 2;
 
-
-
   return (
     <div>
       {/*<Navbar/>*/}
