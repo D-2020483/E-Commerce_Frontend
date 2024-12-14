@@ -89,7 +89,7 @@ function Products() {
   ];
 
   const [selectedCategoryId, setSelectedCategoryId] = useState("1");
-  const [sortOrder, setSortOrder] = useState("ascending")
+ // const [sortOrder, setSortOrder] = useState("ascending")
 
 
   const filteredProducts =
@@ -98,19 +98,19 @@ function Products() {
       : products.filter((product) => product.categoryId === selectedCategoryId);
 
 
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
+  {/*const sortedProducts = [...filteredProducts].sort((a, b) => {
         const priceA = parseFloat(a.price);
         const priceB = parseFloat(b.price);
         return sortOrder === "ascending" ? priceA - priceB : priceB - priceA;
-      });
+      });*/}
 
   const handleTabClick = (_id) => {
         setSelectedCategoryId(_id)
     }
 
-  const handleSort = (order) => {
-        setSortOrder(order);
-      };
+  //const handleSort = (order) => {
+  //      setSortOrder(order);
+  //    };
 
   return (
     <section className="px-8 py-8">
@@ -128,7 +128,7 @@ function Products() {
         ))}
       </div>
       {/*Sort Button*/}
-      <div className="flex gap-4 mt-4">
+      {/*<div className="flex gap-4 mt-4">
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           onClick={() => handleSort("ascending")}>
@@ -139,9 +139,9 @@ function Products() {
           onClick={() => handleSort("descending")}>
           Sort by Price: Descending
         </button>
-      </div>
+      </div>*/}
 
-      <ProductCards products={sortedProducts} />
+      <ProductCards products={filteredProducts} />
     </section>
   );
 }
