@@ -8,7 +8,7 @@ import SignUpPage from './pages/sign-up.page.jsx'
 import SignInPage from './pages/sing-in.page.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  //<StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage/>}/>
@@ -16,5 +16,5 @@ createRoot(document.getElementById('root')).render(
         <Route path="/signin" element={<SignInPage/>}/>
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
+  //</StrictMode>,
 )
