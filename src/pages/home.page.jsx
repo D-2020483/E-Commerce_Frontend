@@ -2,11 +2,13 @@ import Navigation from "@/Navigation";
 import Hero from "@/Hero";
 import Products from "@/Products";
 import { useState } from "react";
+import { store } from "@/lib/store";
+import {Provider, useSelector} from "react-redux";
 
 
 function HomePage() {
     const name = null;
-    const [cart, setCart] = useState([]);
+   {/* const [cart, setCart] = useState([]);
 
     const handleAddToCart = (product) => {
 
@@ -22,7 +24,9 @@ function HomePage() {
        return;
       }
       setCart([...cart, { product: product, quantity: 1 }]);
-    };
+    };*/}
+
+  const cart = useSelector((state) => state.cart.value);
 
   const getCardQuantity =() => {
     let count = 0;
@@ -37,7 +41,7 @@ function HomePage() {
       {/*<Navbar/>*/}
       <Navigation name={name} cartCount={getCardQuantity()}/>
       <Hero/>
-      <Products handleAddToCart={handleAddToCart} />
+      <Products/>
     </div>
   );
     

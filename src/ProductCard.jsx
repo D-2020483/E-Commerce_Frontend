@@ -1,22 +1,31 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import {useSelector , useDispatch } from "react-redux";
+import { addToCart } from "./lib/features/cartSlice";
 
 function ProductCard(props) {
- 
+
+  const count = useSelector((state) => state.counter.value)
+  const dispatch = useDispatch()
 
     const handleClick = (e) =>{
-      props.handleAddToCart({
+      dispatch(
+        addToCart({
         _id:props._id,
         name:props.name,
         price:props.price,
         image:props.image,
         discription:props.description,
-      });
-    };
+      })
+    );
+  };
+
+    
 
   return (
     <Card>
+      {count}
       <div className="h-80 bg-card rounded-lg p-4 relative">
         <img src={props.image} className="block"/>
       </div>
