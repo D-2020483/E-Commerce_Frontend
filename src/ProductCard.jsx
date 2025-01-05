@@ -10,8 +10,7 @@ function ProductCard(props) {
   const dispatch = useDispatch()
 
     const handleClick = (e) =>{
-      dispatch(
-        addToCart({
+      dispatch(addToCart({
         _id:props._id,
         name:props.name,
         price:props.price,
@@ -19,7 +18,7 @@ function ProductCard(props) {
         discription:props.description,
       })
     );
-  };
+    };
 
     
 
