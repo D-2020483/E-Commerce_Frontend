@@ -8,6 +8,8 @@ import SignUpPage from './pages/sign-up.page.jsx';
 import SignInPage from './pages/sing-in.page.jsx';
 import { ClerkProvider } from '@clerk/clerk-react'
 import CartPage from './pages/cart.page.jsx';
+import CheckoutPage from './pages/checkout.page.jsx';
+import PaymentPage from './pages/payment.page.jsx';
 
 import { store } from "@/lib/store";
 import {Provider} from "react-redux";
@@ -15,12 +17,11 @@ import RootLayout from './layouts/root.layout.jsx';
 import AccountPage from './pages/account.page.jsx';
 
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
   throw new Error('Add your Clerk Publishable Key to the .env.local file')
 }
-
 
 createRoot(document.getElementById('root')).render(
   <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
@@ -31,6 +32,8 @@ createRoot(document.getElementById('root')).render(
            <Route path="/" element={<HomePage/>}/>
            <Route path="/shop/cart" element={<CartPage/>}/>
            <Route path="/account" element={<AccountPage/>}/>
+           <Route path="/shop/checkout" element={<CheckoutPage/>}/>
+           <Route path="/shop/payment" element={<PaymentPage/>}/>
         </Route> 
         <Route path="/sign-up" element={<SignUpPage/>}/>
         <Route path="/sign-in" element={<SignInPage/>}/>
