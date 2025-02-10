@@ -13,6 +13,8 @@ export const Api = createApi({
     }
     return headers;
   },
+
+  
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => `products`,

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 import { useUser } from "@clerk/clerk-react";
 
 function CheckoutPage() {
-  
   const cart = useSelector((state) => state.cart.value);
   const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
   const navigate = useNavigate();
