@@ -9,6 +9,8 @@ function CheckoutPage() {
   const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
   const navigate = useNavigate();
 
+  
+
   return (
     <main className="px-8">
       <h2 className="text-4xl font-bold">Checkout Page</h2>
