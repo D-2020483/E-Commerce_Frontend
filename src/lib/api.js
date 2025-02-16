@@ -13,14 +13,15 @@ export const Api = createApi({
     }
     return headers;
   },
-
-  
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => `products`,
     }),
     getCategories: builder.query({
       query: () => `categories`,
+    }),
+    getOrder: builder.query({
+      query: (id) => `orders/${id}`,
     }),
     createOrder: builder.mutation({
       query: (body) => ({
@@ -38,4 +39,5 @@ export const {
   useGetProductsQuery,
   useGetCategoriesQuery,
   useCreateOrderMutation,
+  useGetOrderQuery,
 } = Api;

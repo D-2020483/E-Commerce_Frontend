@@ -8,13 +8,13 @@ function Navbar() {
         <nav className="flex items-center justify-between p-4 bg-white shadow-md">
             {/* Brand Section */}
             <div className="text-xl font-bold text-blue-600">
-                <a href="#" className="hover:text-blue-800">Mebius</a>
+                <Link to="/" className="hover:text-blue-800">Mebius</Link>
             </div>
 
             {/* Navigation Links */}
             <div className="flex space-x-4">
-                <a href="#" className="text-gray-600 hover:text-black">Home</a>
-                <a href="#" className="text-gray-600 hover:text-black">Shop</a>
+                <Link to="/" className="text-gray-600 hover:text-black">Home</Link>
+                <Link to="/shop" className="text-gray-600 hover:text-black">Shop</Link>
             </div>
 
             {/* Right Section (Cart and User Info) */}

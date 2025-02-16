@@ -15,6 +15,7 @@ import { store } from "@/lib/store";
 import {Provider} from "react-redux";
 import RootLayout from './layouts/root.layout.jsx';
 import AccountPage from './pages/account.page.jsx';
+import CompletePage from './pages/complete.page.jsx';
 
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
            <Route path="/account" element={<AccountPage/>}/>
            <Route path="/shop/checkout" element={<CheckoutPage/>}/>
            <Route path="/shop/payment" element={<PaymentPage/>}/>
+           <Route path="/shop/complete" element={<CompletePage/>}/>
         </Route> 
         <Route path="/sign-up" element={<SignUpPage/>}/>
         <Route path="/sign-in" element={<SignInPage/>}/>
