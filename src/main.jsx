@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 import { BrowserRouter, Routes , Route } from 'react-router';
+
 import HomePage from './pages/home.page.jsx';
 import SignUpPage from './pages/sign-up.page.jsx';
 import SignInPage from './pages/sing-in.page.jsx';
@@ -10,6 +11,7 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import CartPage from './pages/cart.page.jsx';
 import CheckoutPage from './pages/checkout.page.jsx';
 import PaymentPage from './pages/payment.page.jsx';
+import AdminCreateProductPage from './pages/admmin-product-create.page.jsx';
 
 import { store } from "@/lib/store";
 import {Provider} from "react-redux";
@@ -36,6 +38,7 @@ createRoot(document.getElementById('root')).render(
            <Route path="/shop/checkout" element={<CheckoutPage/>}/>
            <Route path="/shop/payment" element={<PaymentPage/>}/>
            <Route path="/shop/complete" element={<CompletePage/>}/>
+           <Route path="/admin/products/create" element={<AdminCreateProductPage/>}/>
         </Route> 
         <Route path="/sign-up" element={<SignUpPage/>}/>
         <Route path="/sign-in" element={<SignInPage/>}/>
