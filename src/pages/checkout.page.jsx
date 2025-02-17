@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useSelector } from "react-redux"
-import ShippingAddressForm from "../components/ShippingAddressform"
+import ShippingAddressForm from "../components/ShippingAddressform.jsx"
 
 export default function CheckoutPage() {
   const cart = useSelector((state) => state.cart.value)
