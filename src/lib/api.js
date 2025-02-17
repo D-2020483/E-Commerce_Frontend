@@ -3,9 +3,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const Api = createApi({
   reducerPath: "Api",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/" }),
-  prepareHeaders: async (headers, { getState }) => {
-    const token = await window.Clerk.Session.getToken();
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/" }),
+    prepareHeaders: async (headers, { getState }) => {
+    const token = await window.Clerk?.Session?.getToken();
     console.log(token);
 
     if (token) {
