@@ -12,6 +12,7 @@ import CartPage from './pages/cart.page.jsx';
 import CheckoutPage from './pages/checkout.page.jsx';
 import PaymentPage from './pages/payment.page.jsx';
 import AdminCreateProductPage from './pages/admmin-product-create.page.jsx';
+import Shop from './pages/Shop';
 
 import { store } from "@/lib/store";
 import {Provider} from "react-redux";
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')).render(
            <Route path="/shop/payment" element={<PaymentPage/>}/>
            <Route path="/shop/complete" element={<CompletePage/>}/>
            <Route path="/admin/products/create" element={<AdminCreateProductPage/>}/>
+           <Route path="/shop" element={<Shop />} />
         </Route> 
         <Route path="/sign-up" element={<SignUpPage/>}/>
         <Route path="/sign-in" element={<SignInPage/>}/>

@@ -1,35 +1,53 @@
-import { Button } from "@/components/ui/button";
-import { useCreateOrderMutation } from "@/lib/api";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-import ShippingAddressForm from "@/components/ShippingAddressForm";
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { useSelector } from "react-redux"
+import ShippingAddressForm from "@/components/ShippingAddressForm"
 
-function CheckoutPage() {
-  const cart = useSelector((state) => state.cart.value);
-  
+export default function CheckoutPage() {
+  const cart = useSelector((state) => state.cart.value)
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2)
+  }
+
   return (
-    <main className="px-8">
-      <h2 className="text-4xl font-bold">Checkout Page</h2>
-      <div className="mt-4">
-        <h3 className="text-3xl font-semibold">Order Details</h3>
-        <div className="mt-2">
-          {cart.map((item, index) => (
-            <div key={index}>
-              <p>{item.product.name}</p>
-              <p>{item.product.price}</p>
-              <p>{item.quantity}</p>
+    <main className="container mx-auto px-4 py-8">
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Order Details Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Order Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {cart.map((item, index) => (
+              <div key={index} className="flex justify-between items-center py-2">
+                <div>
+                  <p className="font-semibold">{item.product.name}</p>
+                  <p className="text-muted-foreground">Quantity: {item.quantity}</p>
+                </div>
+                <p className="font-bold">${(item.product.price * item.quantity).toFixed(2)}</p>
+              </div>
+            ))}
+            <Separator className="my-4" />
+            <div className="flex justify-between font-bold text-lg">
+              <span>Total</span>
+              <span>${calculateTotal()}</span>
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="mt-4">
-        <h3 className="text-3xl font-semibold">Enter Shipping Address</h3>
-        <div className="mt-2 w-1/2">
-          <ShippingAddressForm cart={cart}/>
-        </div>
+          </CardContent>
+        </Card>
+
+        {/* Shipping Address Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Shipping Address</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ShippingAddressForm cart={cart} />
+          </CardContent>
+        </Card>
       </div>
     </main>
-  );
+  )
 }
-
-export default CheckoutPage;
