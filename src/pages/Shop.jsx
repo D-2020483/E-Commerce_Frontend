@@ -22,7 +22,8 @@ const ProductCard = ({
       name,
       price,
       image,
-      quantity: 1
+      quantity: 1,
+      uniqueId: Date.now()
     }));
   };
 
