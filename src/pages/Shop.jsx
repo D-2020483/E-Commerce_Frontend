@@ -12,7 +12,8 @@ const ProductCard = ({
   name, 
   price, 
   image, 
-  description 
+  description,
+  onCartAdd 
 }) => {
   const dispatch = useDispatch();
 
@@ -24,6 +25,7 @@ const ProductCard = ({
       image,
       quantity: 1,
     }));
+    onCartAdd();
   };
 
   return (
@@ -60,6 +62,8 @@ const Shop = () => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const dispatch = useDispatch();
+  
   // Fetch products on component mount
   useEffect(() => {
     const fetchProducts = async () => {
