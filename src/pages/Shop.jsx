@@ -17,11 +17,19 @@ const ProductCard = ({
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
+    if (!_id) {
+      console.error('Product ID is missing:', { _id, name, price, image, description });
+      return;
+    }
+
     dispatch(cartSlice.actions.addToCart({
-      id: _id,
-      name,
-      price,
-      image,
+      product: {
+        _id,
+        name,
+        price,
+        image,
+        description
+      },
       quantity: 1
     }));
   };
@@ -118,6 +126,53 @@ const Shop = () => {
     }
     
     setFilteredProducts(result);
+  };
+
+  const createOrder = async (cartItems) => {
+    try {
+      const orderItems = cartItems.map(item => ({
+        product: {
+          _id: item.product._id,
+          name: item.product.name,
+          price: item.product.price,
+          image: item.product.image,
+          description: item.product.description
+        },
+        quantity: item.quantity
+      }));
+
+      const validateOrderItems = (items) => {
+        return items.every(item => 
+          item.product && 
+          item.product._id && 
+          typeof item.product._id === 'string' &&
+          item.quantity > 0
+        );
+      };
+
+      if (!validateOrderItems(orderItems)) {
+        throw new Error('Invalid order items - missing required fields');
+      }
+
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: orderItems,
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Order creation failed');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
   };
 
   return (
