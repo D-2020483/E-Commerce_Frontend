@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react'
 import { cartSlice } from '@/lib/features/cartSlice'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const ProductCard = ({ 
   _id,
@@ -16,16 +17,19 @@ const ProductCard = ({
   onCartAdd 
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
     dispatch(cartSlice.actions.addToCart({
-      id: _id,
+      product: {
+     _id,
       name,
       price,
       image,
       quantity: 1,
+      }
     }));
-    onCartAdd();
+    navigate('/cart');
   };
 
   return (
@@ -63,7 +67,7 @@ const Shop = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
-  
+
   // Fetch products on component mount
   useEffect(() => {
     const fetchProducts = async () => {
