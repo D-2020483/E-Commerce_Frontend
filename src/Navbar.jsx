@@ -18,7 +18,7 @@ function Navbar() {
             </div>
 
             {/* Right Section (Cart and User Info) */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
                 <span className="text-gray-600">{itemCount}</span>
                 <a href="#" className="text-gray-600 hover:text-black">Cart</a>
                 
