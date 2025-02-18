@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react'
 import { cartSlice } from '@/lib/features/cartSlice'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 const ProductCard = ({ 
   _id,
@@ -20,16 +20,18 @@ const ProductCard = ({
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    dispatch(cartSlice.actions.addToCart({
-      product: {
-     _id,
+    const item = {
+      _id,
       name,
       price,
       image,
       quantity: 1,
-      }
+    };
+    
+    dispatch(cartSlice.actions.addToCart({
+      product: item
     }));
-    navigate('/cart');
+    
   };
 
   return (
