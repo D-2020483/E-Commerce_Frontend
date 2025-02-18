@@ -17,16 +17,14 @@ const ProductCard = ({
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    const cartItem = {
+    dispatch(cartSlice.actions.addToCart({
       id: _id,
       name,
       price,
       image,
-      description,
-      uniqueId: `${_id}-${Date.now()}` // Create a unique identifier combining product ID and timestamp
-    };
-    
-    dispatch(cartSlice.actions.addToCart(cartItem));
+      quantity: 1,
+      uniqueId: Date.now()
+    }));
   };
 
   return (
