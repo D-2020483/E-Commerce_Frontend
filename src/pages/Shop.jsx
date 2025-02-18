@@ -23,7 +23,6 @@ const ProductCard = ({
       price,
       image,
       quantity: 1,
-      uniqueId: Date.now()
     }));
   };
 
