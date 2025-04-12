@@ -75,7 +75,7 @@ const Shop = () => {
 
   const filterAndSortProducts = (category, order) => {
     let result = [...products];
-    if (category !== 'all') result = result.filter(p => p.category === category);
+    if (category !== '') result = result.filter(p => p.category === category);
     if (order !== 'none') {
       result.sort((a, b) => order === 'asc' ? a.price - b.price : b.price - a.price);
     }
@@ -103,7 +103,12 @@ const Shop = () => {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value= "">All Categories</SelectItem>
+              <SelectItem value="">Headphones</SelectItem>
+              <SelectItem value="">Earbuds</SelectItem>
+              <SelectItem value="">Speakers</SelectItem>
+              <SelectItem value="">Mobile Phones</SelectItem>
+              <SelectItem value="">Smart Watches</SelectItem>
               {categories.filter(Boolean).map((category) => (
                 <SelectItem key={category} value={category}>
                   {category.charAt(0).toUpperCase() + category.slice(1)}
