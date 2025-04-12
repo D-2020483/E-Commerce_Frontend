@@ -135,7 +135,7 @@ const Shop = () => {
 
       {/* Show selected category heading */}
       <div className="mb-6 text-xl font-semibold">
-        {selectedCategory === 'all'
+        {selectedCategory === 'all' ? 'All Products' : selectedCategory}
           ? 'All Products'
           : `Category: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}`}
       </div>
