@@ -45,7 +45,7 @@ const ProductCard = ({
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('none');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOrder, setSortOrder] = useState('none');
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +75,7 @@ const Shop = () => {
 
   const filterAndSortProducts = (category, order) => {
     let result = [...products];
-    if (category !== 'none') result = result.filter(p => p.category === category);
+    if (category !== 'none') result = result.filter(p => p.category.toLowerCase() === category.toLowerCase());
     if (order !== 'none') {
       result.sort((a, b) => order === 'asc' ? a.price - b.price : b.price - a.price);
     }
@@ -103,12 +103,7 @@ const Shop = () => {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value= "none">All Categories</SelectItem>
-              <SelectItem value="Headphones">Headphones</SelectItem>
-              <SelectItem value="Earbuds">Earbuds</SelectItem>
-              <SelectItem value="Speakers">Speakers</SelectItem>
-              <SelectItem value="Mobile Phones">Mobile Phones</SelectItem>
-              <SelectItem value="Smart Watches">Smart Watches</SelectItem>
+              <SelectItem value="none">All Categories</SelectItem>
               {categories.filter(Boolean).map((category) => (
                 <SelectItem key={category} value={category}>
                   {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -135,7 +130,7 @@ const Shop = () => {
 
       {/* Show selected category heading */}
       <div className="mb-6 text-xl font-semibold">
-        {selectedCategory === 'all'
+        {selectedCategory === 'none'
           ? 'All Products'
           : `Category: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}`}
       </div>
