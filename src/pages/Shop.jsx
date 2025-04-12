@@ -174,7 +174,7 @@ const Shop = () => {
           No products found
         </div>
       ) : (
-        // ✅ CHANGED: Grouped by category section
+        //  CHANGED: Grouped by category section
         <div className="space-y-10">
           {categories
             .filter(category => category && (selectedCategory === 'all' || category === selectedCategory))
