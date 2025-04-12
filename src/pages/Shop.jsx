@@ -104,11 +104,6 @@ const Shop = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">All Categories</SelectItem>
-              <SelectItem value="none">Headphones</SelectItem>
-              <SelectItem value="none">Earbuds</SelectItem>
-              <SelectItem value="none">Speakers</SelectItem>
-              <SelectItem value="none">Mobile Phones</SelectItem>
-              <SelectItem value="none">Smart Watches</SelectItem>
               {categories.filter(Boolean).map((category) => (
                 <SelectItem key={category} value={category}>
                   {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -136,7 +131,7 @@ const Shop = () => {
       {/* Show selected category heading */}
       <div className="mb-6 text-xl font-semibold">
         {selectedCategory === 'none'
-          ? 'All Categories'
+          ? 'All Products'
           : `Category: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}`}
       </div>
 
