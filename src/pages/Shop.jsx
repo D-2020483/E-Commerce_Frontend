@@ -13,7 +13,8 @@ const ProductCard = ({
   name, 
   price, 
   image, 
-  description
+  description,
+  onCartAdd 
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const ProductCard = ({
     dispatch(cartSlice.actions.addToCart({
       product: item
     }));
+    
   };
 
   return (
@@ -82,7 +84,7 @@ const Shop = () => {
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
-
+        
         // Extract unique categories
         const uniqueCategories = [...new Set(data.map(product => product.category))];
         setCategories(uniqueCategories);
@@ -112,19 +114,19 @@ const Shop = () => {
   // Combined filter and sort function
   const filterAndSortProducts = (category, order) => {
     let result = [...products];
-
+    
     // Apply category filter
     if (category !== 'all') {
       result = result.filter(product => product.category === category);
     }
-
+    
     // Apply sorting
     if (order !== 'none') {
       result.sort((a, b) => {
         return order === 'asc' ? a.price - b.price : b.price - a.price;
       });
     }
-
+    
     setFilteredProducts(result);
   };
 
@@ -164,7 +166,7 @@ const Shop = () => {
         </div>
       </div>
 
-      {/* Products Grid Section */}
+      {/* Products Grid */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
@@ -174,32 +176,17 @@ const Shop = () => {
           No products found
         </div>
       ) : (
-        //  CHANGED: Grouped by category section
-        <div className="space-y-10">
-          {categories
-            .filter(category => category && (selectedCategory === 'all' || category === selectedCategory))
-            .map((category) => {
-              const categoryProducts = filteredProducts.filter(product => product.category === category);
-              return (
-                <div key={category}>
-                  <h2 className="text-2xl font-bold mb-4">
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {categoryProducts.map((product) => (
-                      <ProductCard 
-                        key={product._id}
-                        _id={product._id}
-                        name={product.name}
-                        price={product.price}
-                        image={product.image}
-                        description={product.description}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <ProductCard 
+              key={product._id}
+              _id={product._id}
+              name={product.name}
+              price={product.price}
+              image={product.image}
+              description={product.description}
+            />
+          ))}
         </div>
       )}
     </div>
