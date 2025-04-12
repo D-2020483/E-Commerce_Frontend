@@ -13,8 +13,7 @@ const ProductCard = ({
   name, 
   price, 
   image, 
-  description,
-  onCartAdd 
+  description
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ const ProductCard = ({
     dispatch(cartSlice.actions.addToCart({
       product: item
     }));
-    
   };
 
   return (
@@ -84,7 +82,7 @@ const Shop = () => {
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
-        
+
         // Extract unique categories
         const uniqueCategories = [...new Set(data.map(product => product.category))];
         setCategories(uniqueCategories);
@@ -114,19 +112,19 @@ const Shop = () => {
   // Combined filter and sort function
   const filterAndSortProducts = (category, order) => {
     let result = [...products];
-    
+
     // Apply category filter
     if (category !== 'all') {
       result = result.filter(product => product.category === category);
     }
-    
+
     // Apply sorting
     if (order !== 'none') {
       result.sort((a, b) => {
         return order === 'asc' ? a.price - b.price : b.price - a.price;
       });
     }
-    
+
     setFilteredProducts(result);
   };
 
@@ -166,7 +164,7 @@ const Shop = () => {
         </div>
       </div>
 
-      {/* Products Grid */}
+      {/* Products Grid Section */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
@@ -176,6 +174,7 @@ const Shop = () => {
           No products found
         </div>
       ) : (
+        // ✅ CHANGED: Grouped by category section
         <div className="space-y-10">
           {categories
             .filter(category => category && (selectedCategory === 'all' || category === selectedCategory))
