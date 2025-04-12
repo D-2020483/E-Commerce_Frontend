@@ -176,17 +176,31 @@ const Shop = () => {
           No products found
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard 
-              key={product._id}
-              _id={product._id}
-              name={product.name}
-              price={product.price}
-              image={product.image}
-              description={product.description}
-            />
-          ))}
+        <div className="space-y-10">
+          {categories
+            .filter(category => category && (selectedCategory === 'all' || category === selectedCategory))
+            .map((category) => {
+              const categoryProducts = filteredProducts.filter(product => product.category === category);
+              return (
+                <div key={category}>
+                  <h2 className="text-2xl font-bold mb-4">
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {categoryProducts.map((product) => (
+                      <ProductCard 
+                        key={product._id}
+                        _id={product._id}
+                        name={product.name}
+                        price={product.price}
+                        image={product.image}
+                        description={product.description}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
         </div>
       )}
     </div>
