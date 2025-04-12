@@ -45,7 +45,7 @@ const ProductCard = ({
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('category');
+  const [selectedCategory, setSelectedCategory] = useState('none');
   const [sortOrder, setSortOrder] = useState('none');
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +75,7 @@ const Shop = () => {
 
   const filterAndSortProducts = (category, order) => {
     let result = [...products];
-    if (category !== 'category') result = result.filter(p => p.category === category);
+    if (category !== 'none') result = result.filter(p => p.category === category);
     if (order !== 'none') {
       result.sort((a, b) => order === 'asc' ? a.price - b.price : b.price - a.price);
     }
