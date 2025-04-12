@@ -7,7 +7,7 @@ import { BrowserRouter, Routes , Route } from 'react-router';
 import HomePage from './pages/home.page.jsx';
 import SignUpPage from './pages/sign-up.page.jsx';
 import SignInPage from './pages/sing-in.page.jsx';
-import { ClerkProvider } from '@clerk/clerk-react'
+import { ClerkProvider } from '@clerk/clerk-react';
 import CartPage from './pages/cart.page.jsx';
 import CheckoutPage from './pages/checkout.page.jsx';
 import PaymentPage from './pages/payment.page.jsx';
