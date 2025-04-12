@@ -45,7 +45,7 @@ const ProductCard = ({
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('none');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOrder, setSortOrder] = useState('none');
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
