@@ -1,54 +1,16 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { useSelector } from "react-redux";
-import ShippingAddressForm from "../components/ShippingAddressform.jsx";
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { useSelector } from "react-redux"
+import ShippingAddressForm from "../components/ShippingAddressform.jsx"
 
 export default function CheckoutPage() {
-  const cart = useSelector((state) => state.cart.value);
-  const [loading, setLoading] = useState(false); // for loading state
-  const [error, setError] = useState(null); // for error handling
-  const [success, setSuccess] = useState(null); // for success message
+  const cart = useSelector((state) => state.cart.value)
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2);
-  };
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
-    // Send order data to backend
-    const orderDetails = cart.map(item => ({
-      productId: item.product._id, // assuming the product has an _id
-      quantity: item.quantity,
-    }));
-
-    try {
-      const response = await fetch('https://fed-storefront-backend-dinithi.onrender.com/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderDetails }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess('Order placed successfully!');
-      } else {
-        setError(data.message || 'Failed to place order');
-      }
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2)
+  }
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
@@ -85,19 +47,6 @@ export default function CheckoutPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Checkout Button and Loading/Error Messages */}
-      <div className="mt-8">
-        {success && <p className="text-green-500 font-bold">{success}</p>}
-        {error && <p className="text-red-500 font-bold">{error}</p>}
-        <Button
-          onClick={handleCheckout}
-          disabled={loading}
-          className="w-full mt-4"
-        >
-          {loading ? 'Processing...' : 'Place Order'}
-        </Button>
-      </div>
     </main>
-  );
+  )
 }
