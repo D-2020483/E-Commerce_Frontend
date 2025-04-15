@@ -13,6 +13,7 @@ import CheckoutPage from './pages/checkout.page.jsx';
 import PaymentPage from './pages/payment.page.jsx';
 import AdminCreateProductPage from './pages/admmin-product-create.page.jsx';
 import Shop from './pages/Shop';
+import MyOrdersPage from './pages/myorder.page.jsx';
 
 import { store } from "@/lib/store";
 import {Provider} from "react-redux";
@@ -41,6 +42,7 @@ createRoot(document.getElementById('root')).render(
            <Route path="/shop/complete" element={<CompletePage/>}/>
            <Route path="/admin/products/create" element={<AdminCreateProductPage/>}/>
            <Route path="/shop" element={<Shop />} />
+           <Route path="/myorders" element={<MyOrdersPage/>}/>
         </Route> 
         <Route path="/sign-up" element={<SignUpPage/>}/>
         <Route path="/sign-in" element={<SignInPage/>}/>
