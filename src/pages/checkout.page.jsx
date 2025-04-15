@@ -27,7 +27,7 @@ export default function CheckoutPage() {
     }));
 
     try {
-      const response = await fetch('http://localhost:5000/api/checkout', {
+      const response = await fetch('https://fed-storefront-backend-dinithi.onrender.com/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
