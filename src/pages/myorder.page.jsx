@@ -57,7 +57,7 @@ export default function MyOrdersPage() {
       <h1 className="text-3xl font-bold mb-6">My Orders</h1>
 
       {orders.length === 0 ? (
-        <p className="text-muted-foreground">You haven’t placed any orders yet.</p>
+        <p className="text-muted-foreground">You haven't placed any orders yet.</p>
       ) : (
         orders.map((order) => (
           <Card key={order.id} className="mb-4">
@@ -69,7 +69,7 @@ export default function MyOrdersPage() {
             </CardHeader>
             <CardContent className="p-4">
               <p className="text-sm">Date: {new Date(order.createdAt).toLocaleString()}</p>
-              <p className="text-sm">Total: LKR {order.total.toFixed(2)}</p>
+              <p className="text-sm">Total: $ {order.total.toFixed(2)}</p>
             </CardContent>
           </Card>
         ))
