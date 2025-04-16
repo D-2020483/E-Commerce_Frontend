@@ -68,6 +68,9 @@ export default function CheckoutPage() {
               <span>Total</span>
               <span>${calculateTotal()}</span>
             </div>
+            <Button onClick={handleCheckout} className="mt-4">
+              Pay with Stripe
+            </Button>
           </CardContent>
         </Card>
 
