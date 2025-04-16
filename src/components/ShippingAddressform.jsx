@@ -151,9 +151,9 @@ const ShippingAddressForm = ({ cart }) => {
               )}
             />
           </div>
-          <div className="mt-4">
-            <Button type="submit">Proceed to Payment</Button>
-          </div>
+            <Button onClick={handleCheckout} className="mt-4">
+              Pay with Stripe
+            </Button>
         </form>
       </Form>
     </div>
