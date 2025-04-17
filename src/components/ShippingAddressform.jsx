@@ -22,7 +22,6 @@ const formSchema = z.object({
   zip_code: z.string().min(1, "Zip Code is required"),
   phone: z.string().refine(
     (value) => {
-      // This regex checks for a basic international phone number format
       return /^\+?[1-9]\d{1,14}$/.test(value);
     },
     {
@@ -39,7 +38,7 @@ const ShippingAddressForm = ({ cart }) => {
   const navigate = useNavigate();
 
   async function handleSubmit(values) {
-    console.log("Form values:", values); // Debugging: Check form values
+    console.log("Form values:", values); 
     const formattedCart = cart.map((item) => ({
       product: {
         _id: item.product._id,
@@ -51,7 +50,7 @@ const ShippingAddressForm = ({ cart }) => {
       quantity: item.quantity,
     }));
 
-    console.log("Formatted cart:", formattedCart); // Debugging: Check cart data
+    console.log("Formatted cart:", formattedCart); 
 
     try {
       const response = await createOrder({
@@ -66,12 +65,12 @@ const ShippingAddressForm = ({ cart }) => {
         },
       });
 
-      console.log("Order response:", response); // Debugging: Check API response
+      console.log("Order response:", response); 
 
       if (response?.data?._id) {
         navigate(`/shop/complete?orderId=${response.data._id}`);
       } else {
-        console.error("Order creation failed:", response.error);
+        console.error("Order creation failed:", response.error || response);
         alert("Failed to create order. Please try again.");
       }
     } catch (error) {
