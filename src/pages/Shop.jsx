@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react';
-import { cartSlice } from '@/lib/features/cartSlice';
+import { cartSlice } from '@/lib/features/cartSlice/cartSlice';
 import { useDispatch } from 'react-redux';
 
 const ProductCard = ({
@@ -17,8 +17,15 @@ const ProductCard = ({
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    const item = { _id, name, price, image, quantity: 1 };
-    dispatch(cartSlice.actions.addToCart({ product: item }));
+    dispatch(
+      addToCart({
+        _id,
+        name,
+        price,
+        image,
+        description,
+      })
+    );
   };
 
   return (
