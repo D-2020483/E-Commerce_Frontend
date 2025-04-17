@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react';
 import { cartSlice } from '@/lib/features/cartSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 
 const ProductCard = ({
   _id, name, price, image, description,
@@ -77,12 +76,15 @@ const Shop = () => {
     let result = [...products];
 
     // Filter by category
-    if (category !== 'none') result = result.filter(p => p.category?.toLowerCase() === category.toLowerCase());
+    if (category !== 'none') {
+      result = result.filter(p => p.category?.toLowerCase() === category.toLowerCase());
+    }
 
     // Sort by price
     if (order !== 'none') {
-      result.sort((a, b) => order === 'asc' ? a.price - b.price : b.price - a.price);
+      result.sort((a, b) => (order === 'asc' ? a.price - b.price : b.price - a.price));
     }
+
     setFilteredProducts(result);
   };
 
