@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react';
-import { cartSlice } from '@/lib/features/cartSlice/cartSlice';
+import { addToCart } from '@/lib/features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 
 const ProductCard = ({
