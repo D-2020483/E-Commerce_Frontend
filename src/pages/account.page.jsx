@@ -48,7 +48,7 @@ export default function AccountPage() {
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
             <h2 className="text-2xl font-bold mb-4">Please Sign In</h2>
-            <Button onClick={() => window.location.href = '/sign-in'}>
+            <Button onClick={() => (window.location.href = "/sign-in")}>
               Go to Sign In
             </Button>
           </CardContent>
@@ -56,22 +56,6 @@ export default function AccountPage() {
       </div>
     )
   }
-
-  // Mock orders data
-  const orders = [
-    {
-      id: "12345",
-      date: "2025-04-01",
-      total: "$120.00",
-      status: "Delivered",
-    },
-    {
-      id: "67890",
-      date: "2025-03-15",
-      total: "$75.50",
-      status: "Shipped",
-    },
-  ]
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
@@ -102,8 +86,12 @@ export default function AccountPage() {
                   />
                   <AvatarFallback>
                     {user.fullName
-                      ? user.fullName.split(' ').map(n => n[0]).join('').toUpperCase()
-                      : 'UN'}
+                      ? user.fullName
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "UN"}
                   </AvatarFallback>
                 </Avatar>
 
@@ -128,13 +116,13 @@ export default function AccountPage() {
                     <label className="block text-sm font-medium text-muted-foreground">
                       Full Name
                     </label>
-                    <p className="mt-1">{user.fullName || 'Not provided'}</p>
+                    <p className="mt-1">{user.fullName || "Not provided"}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-muted-foreground">
                       Username
                     </label>
-                    <p className="mt-1">{user.username || 'Not set'}</p>
+                    <p className="mt-1">{user.username || "Not set"}</p>
                   </div>
                 </div>
 
@@ -149,7 +137,7 @@ export default function AccountPage() {
                       Email Address
                     </label>
                     <p className="mt-1 flex items-center gap-2">
-                      {user.emailAddresses[0]?.emailAddress || 'No email'}
+                      {user.emailAddresses[0]?.emailAddress || "No email"}
                     </p>
                   </div>
                   <div>
@@ -158,7 +146,7 @@ export default function AccountPage() {
                     </label>
                     <p className="mt-1 flex items-center gap-2">
                       <PhoneIcon className="h-4 w-4 text-muted-foreground" />
-                      {user.phoneNumbers[0]?.phoneNumber || 'Not provided'}
+                      {user.phoneNumbers[0]?.phoneNumber || "Not provided"}
                     </p>
                   </div>
                 </div>
@@ -188,29 +176,15 @@ export default function AccountPage() {
             <CardHeader className="p-6">
               <h2 className="text-xl font-bold">My Orders</h2>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              {orders.length > 0 ? (
-                <ul className="space-y-4">
-                  {orders.map((order) => (
-                    <li key={order.id} className="border p-4 rounded-md">
-                      <p>
-                        <strong>Order ID:</strong> {order.id}
-                      </p>
-                      <p>
-                        <strong>Date:</strong> {order.date}
-                      </p>
-                      <p>
-                        <strong>Total:</strong> {order.total}
-                      </p>
-                      <p>
-                        <strong>Status:</strong> {order.status}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No orders found.</p>
-              )}
+            <CardContent className="p-6">
+              <p>
+                <a
+                  href="/my-orders"
+                  className="text-blue-500 underline hover:text-blue-700"
+                >
+                  View your orders here
+                </a>
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
