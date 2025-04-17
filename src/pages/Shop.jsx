@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react';
 import { cartSlice } from '@/lib/features/cartSlice';
 import { useDispatch } from 'react-redux';
-
 const ProductCard = ({
   _id, name, price, image, description,
 }) => {
@@ -52,24 +51,30 @@ const Shop = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsAndCategories = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/products");
-        if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
-        const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data);
-        const uniqueCategories = [...new Set(data.map(product => product.categoryId))];
-        setCategories(uniqueCategories);
+
+        // Fetch products
+        const productsResponse = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/products");
+        if (!productsResponse.ok) throw new Error(`HTTP Error! Status: ${productsResponse.status}`);
+        const productsData = await productsResponse.json();
+        setProducts(productsData);
+        setFilteredProducts(productsData);
+
+        // Fetch categories
+        const categoriesResponse = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/categories");
+        if (!categoriesResponse.ok) throw new Error(`HTTP Error! Status: ${categoriesResponse.status}`);
+        const categoriesData = await categoriesResponse.json();
+        setCategories(categoriesData);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchProductsAndCategories();
   }, []);
 
   const filterAndSortProducts = (categoryId, order) => {
@@ -98,6 +103,12 @@ const Shop = () => {
     filterAndSortProducts(selectedCategoryId, order);
   };
 
+  const getCategoryName = (categoryId) => {
+    if (categoryId === 'ALL') return 'All Categories';
+    const category = categories.find(cat => cat._id === categoryId);
+    return category ? category.name : 'Unknown Category';
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Filter Section */}
@@ -110,9 +121,9 @@ const Shop = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Categories</SelectItem>
-              {categories.filter(Boolean).map((categoryId) => (
-                <SelectItem key={categoryId} value={categoryId}>
-                  {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)}
+              {categories.map((category) => (
+                <SelectItem key={category._id} value={category._id}>
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -136,9 +147,7 @@ const Shop = () => {
 
       {/* Show selected category heading */}
       <div className="mb-6 text-xl font-semibold">
-        {selectedCategoryId === 'ALL'
-          ? 'All Products'
-          : `Category: ${selectedCategoryId.charAt(0).toUpperCase() + selectedCategoryId.slice(1)}`}
+        {getCategoryName(selectedCategoryId)}
       </div>
 
       {/* Products Grid */}
