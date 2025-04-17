@@ -3,14 +3,20 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import ShippingAddressForm from "../components/ShippingAddressform.jsx"
 
 export default function CheckoutPage() {
   const cart = useSelector((state) => state.cart.value)
+  const navigate = useNavigate();
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2)
-  }
+  };
+  const handleProceedToPayment = () => {
+    navigate("/shop/complete")
+  };
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
@@ -46,6 +52,16 @@ export default function CheckoutPage() {
             <ShippingAddressForm cart={cart} />
           </CardContent>
         </Card>
+      </div>
+
+        {/* Proceed to Payment Button */}
+      <div className="mt-8 flex justify-end">
+        <Button
+          className="bg-primary text-white px-6 py-3 rounded-lg"
+          onClick={handleProceedToPayment}
+        >
+          Proceed to Payment
+        </Button>
       </div>
     </main>
   )
