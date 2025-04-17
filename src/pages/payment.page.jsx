@@ -22,14 +22,7 @@ export default function PaymentPage() {
 
   const handlePlaceOrder = async () => {
     try {
-      // Log the payload being sent to the backend
-      console.log("Placing order with payload:", { cart, totalPrice });
-  
-      // Call the mutation to create an order
       const response = await createOrder({ cart, totalPrice }).unwrap();
-  
-      // Log the response from the backend
-      console.log("Order created successfully:", response);
   
       const { orderId } = response;
   
@@ -43,13 +36,10 @@ export default function PaymentPage() {
       });
   
       // Redirect to the CompletePage with the unique orderId
-      navigate(`/shop/complete?orderId=${orderId}`);
+      window.location.href = `https://fed-storefront-frontend-dinithi.netlify.app/shop/complete?orderId=${orderId}`;
     } catch (error) {
-      // Log the error response from the backend
-      console.error("Error placing order:", error);
-  
-      // Show error toast
       toast.error("Failed to place order. Please try again.");
+      console.error("Error placing order:", error);
     }
   };
 
