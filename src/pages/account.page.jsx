@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { useUser, useAuth } from "@clerk/clerk-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -16,6 +16,16 @@ import {
 export default function AccountPage() {
   const { isLoaded, isSignedIn, user } = useUser()
   const { signOut } = useAuth()
+  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  // Apply dark mode class to the body
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("dark")
+    } else {
+      document.body.classList.remove("dark")
+    }
+  }, [isDarkMode])
 
   // Loading state
   if (!isLoaded) {
@@ -145,19 +155,12 @@ export default function AccountPage() {
           <Card>
             <CardContent className="p-6 space-y-4">
               <div className="flex justify-between items-center">
-                <span>Enable Notifications</span>
-                <input 
-                  type="checkbox" 
-                  className="toggle" 
-                  // Add state management for notifications
-                />
-              </div>
-              <div className="flex justify-between items-center">
                 <span>Dark Mode</span>
-                <input 
-                  type="checkbox" 
-                  className="toggle" 
-                  // Add state management for dark mode
+                <input
+                  type="checkbox"
+                  className="toggle"
+                  checked={isDarkMode}
+                  onChange={(e) => setIsDarkMode(e.target.checked)}
                 />
               </div>
             </CardContent>

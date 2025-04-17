@@ -7,6 +7,7 @@
 
 body{
   font-family: "inter" , sans-serif;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 
