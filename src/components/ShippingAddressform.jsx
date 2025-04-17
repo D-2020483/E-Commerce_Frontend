@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,6 +23,7 @@ const formSchema = z.object({
   zip_code: z.string().min(1, "Zip Code is required"),
   phone: z.string().refine(
     (value) => {
+      // This regex checks for a basic international phone number format
       return /^\+?[1-9]\d{1,14}$/.test(value);
     },
     {
@@ -31,15 +33,16 @@ const formSchema = z.object({
 });
 
 const ShippingAddressForm = ({ cart }) => {
+  console.log('Cart data:', JSON.stringify(cart , null, 2));
+  
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
-  const [createOrder] = useCreateOrderMutation();
+  const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
   const navigate = useNavigate();
-
-  async function handleSubmit(values) {
-    console.log("Form values:", values); 
-    const formattedCart = cart.map((item) => ({
+  
+  function handleSubmit(values) {
+    const formattedCart = cart.map(item => ({
       product: {
         _id: item.product._id,
         name: item.product.name,
@@ -49,34 +52,19 @@ const ShippingAddressForm = ({ cart }) => {
       },
       quantity: item.quantity,
     }));
-
-    console.log("Formatted cart:", formattedCart); 
-
-    try {
-      const response = await createOrder({
-        items: formattedCart,
-        shippingAddress: {
-          line_1: values.line_1,
-          line_2: values.line_2,
-          city: values.city,
-          state: values.state,
-          zip_code: values.zip_code,
-          phone: values.phone,
-        },
-      });
-
-      console.log("Order response:", response); 
-
-      if (response?.data?._id) {
-        navigate(`/shop/complete?orderId=${response.data._id}`);
-      } else {
-        console.error("Order creation failed:", response.error || response);
-        alert("Failed to create order. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during order creation:", error);
-      alert("An error occurred. Please try again.");
-    }
+    console.log("Formatted order:", JSON.stringify(formattedCart, null, 2));
+    createOrder({
+      items: formattedCart,
+      shippingAddress: {
+        line_1: values.line_1,
+        line_2: values.line_2,
+        city: values.city,
+        state: values.state,
+        zip_code: values.zip_code,
+        phone: values.phone,
+      },
+    });
+    navigate("/shop/payment");
   }
 
   return (
@@ -130,7 +118,7 @@ const ShippingAddressForm = ({ cart }) => {
                 <FormItem>
                   <FormLabel>State/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="Western Province" {...field} />
+                    <Input placeholder="Wester Province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
