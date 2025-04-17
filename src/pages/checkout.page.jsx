@@ -53,16 +53,6 @@ export default function CheckoutPage() {
           </CardContent>
         </Card>
       </div>
-
-        {/* Proceed to Payment Button */}
-      <div className="mt-8 flex justify-end">
-        <Button
-          className="bg-primary text-white px-6 py-3 rounded-lg"
-          onClick={handleProceedToPayment}
-        >
-          Proceed to Payment
-        </Button>
-      </div>
     </main>
   )
 }
