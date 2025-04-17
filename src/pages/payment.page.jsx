@@ -29,7 +29,7 @@ export default function PaymentPage() {
     });
 
     // Redirect to the CompletePage
-    navigate(`/shop/complete?orderId=${orderId}`);
+    navigate("/shop/complete");
   };
 
 
