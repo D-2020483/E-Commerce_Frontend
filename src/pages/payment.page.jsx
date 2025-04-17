@@ -7,31 +7,41 @@ import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
 import { useNavigate } from "react-router"
+import { useCreateOrderMutation } from "@/lib/api"
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
 
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
   );
 
-  const handlePlaceOrder = () => {
-    const orderId = `ORD-${Date.now()}`;
+  const handlePlaceOrder = async() => {
+    try {
+      const response = await createOrder({ cart, totalPrice }).unwrap();
 
-    // Clear the cart
-    dispatch(clearCart());
+      const { orderId } = response;
 
-    // Show success toast
-    toast.success("Order Placed Successfully", {
-      description: `Total amount: $${totalPrice.toFixed(2)}`,
-      icon: <CheckCircle className="w-5 h-5" />,
-    });
+      // Clear the cart
+      dispatch(clearCart());
 
-    // Redirect to the CompletePage
-    navigate(`/shop/complete?orderId=${orderId}`);
+      // Show success toast
+      toast.success("Order Placed Successfully", {
+        description: `Total amount: $${totalPrice.toFixed(2)}`,
+        icon: <CheckCircle className="w-5 h-5" />,
+      });
+
+      // Redirect to the CompletePage with the unique orderId
+      navigate(`/shop/complete?orderId=${orderId}`);
+    } catch (error) {
+      
+      toast.error("Failed to place order. Please try again.");
+      console.error("Error placing order:", error);
+    }
   };
 
 
