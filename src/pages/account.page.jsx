@@ -10,7 +10,7 @@ import {
   PhoneIcon,
   LogOutIcon,
   SettingsIcon,
-  CreditCardIcon
+  PackageIcon,
 } from "lucide-react"
 
 export default function AccountPage() {
@@ -57,6 +57,22 @@ export default function AccountPage() {
     )
   }
 
+  // Mock orders data
+  const orders = [
+    {
+      id: "12345",
+      date: "2025-04-01",
+      total: "$120.00",
+      status: "Delivered",
+    },
+    {
+      id: "67890",
+      date: "2025-03-15",
+      total: "$75.50",
+      status: "Shipped",
+    },
+  ]
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <Tabs defaultValue="profile" className="w-full">
@@ -69,9 +85,9 @@ export default function AccountPage() {
             <SettingsIcon className="mr-2 h-4 w-4" />
             Settings
           </TabsTrigger>
-          <TabsTrigger value="billing">
-            <CreditCardIcon className="mr-2 h-4 w-4" />
-            Billing
+          <TabsTrigger value="orders">
+            <PackageIcon className="mr-2 h-4 w-4" />
+            My Orders
           </TabsTrigger>
         </TabsList>
 
@@ -167,14 +183,34 @@ export default function AccountPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="billing">
+        <TabsContent value="orders">
           <Card>
+            <CardHeader className="p-6">
+              <h2 className="text-xl font-bold">My Orders</h2>
+            </CardHeader>
             <CardContent className="p-6 space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold">Current Plan</h3>
-                <p>Basic Plan</p>
-              </div>
-              <Button variant="outline">Manage Subscription</Button>
+              {orders.length > 0 ? (
+                <ul className="space-y-4">
+                  {orders.map((order) => (
+                    <li key={order.id} className="border p-4 rounded-md">
+                      <p>
+                        <strong>Order ID:</strong> {order.id}
+                      </p>
+                      <p>
+                        <strong>Date:</strong> {order.date}
+                      </p>
+                      <p>
+                        <strong>Total:</strong> {order.total}
+                      </p>
+                      <p>
+                        <strong>Status:</strong> {order.status}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No orders found.</p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -191,4 +227,4 @@ export default function AccountPage() {
       </Tabs>
     </div>
   )
-};
+}
