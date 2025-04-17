@@ -63,8 +63,13 @@ const ShippingAddressForm = ({ cart }) => {
         zip_code: values.zip_code,
         phone: values.phone,
       },
-    });
-    navigate("/shop/payment");
+    }).then((response) => {
+      if (response?.data?._id) {
+        navigate(`/shop/complete?orderId=${response.data._id}`);
+      } else {
+        console.error("Order creation failed:", response.error);    
+  }
+  });
   }
 
   return (
