@@ -17,8 +17,13 @@ export default function PaymentPage() {
     0
   );
 
-  const handlePlaceOrder = async() => {
-      
+  const handlePlaceOrder = async () => {
+    try {
+      // Simulate an API call to place the order
+      const response = await new Promise((resolve) =>
+        setTimeout(() => resolve({ orderId: "12345" }), 1000)
+      );
+
       const { orderId } = response;
 
       // Clear the cart
@@ -26,9 +31,13 @@ export default function PaymentPage() {
 
       // Show success toast
       toast.success("Order Placed Successfully", {
-        description: `Total amount: $${totalPrice.toFixed(2)}`,
+        description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
+    } catch (error) {
+      // Handle errors
+      toast.error("Failed to place the order. Please try again.");
+    }
   };
 
 
