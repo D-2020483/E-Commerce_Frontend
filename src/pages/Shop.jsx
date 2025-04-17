@@ -44,7 +44,7 @@ const ProductCard = ({
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('none');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('ALL');
   const [sortOrder, setSortOrder] = useState('none');
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,7 +60,7 @@ const Shop = () => {
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
-        const uniqueCategories = [...new Set(data.map(product => product.category))];
+        const uniqueCategories = [...new Set(data.map(product => product.categoryId))];
         setCategories(uniqueCategories);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -72,12 +72,12 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const filterAndSortProducts = (category, order) => {
+  const filterAndSortProducts = (categoryId, order) => {
     let result = [...products];
 
-    // Filter by category
-    if (category !== 'none') {
-      result = result.filter(p => p.category?.toLowerCase() === category.toLowerCase());
+    // Filter by categoryId
+    if (categoryId !== 'ALL') {
+      result = result.filter(p => p.categoryId === categoryId);
     }
 
     // Sort by price
@@ -88,14 +88,14 @@ const Shop = () => {
     setFilteredProducts(result);
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    filterAndSortProducts(category, sortOrder);
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategoryId(categoryId);
+    filterAndSortProducts(categoryId, sortOrder);
   };
 
   const handleSortChange = (order) => {
     setSortOrder(order);
-    filterAndSortProducts(selectedCategory, order);
+    filterAndSortProducts(selectedCategoryId, order);
   };
 
   return (
@@ -104,20 +104,15 @@ const Shop = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
         <div className="flex items-center space-x-4">
           <Filter className="text-muted-foreground" />
-          <Select onValueChange={handleCategoryChange} value={selectedCategory}>
+          <Select onValueChange={handleCategoryChange} value={selectedCategoryId}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">All Categories</SelectItem>
-              <SelectItem value="headphones">Headphones</SelectItem>
-              <SelectItem value="earbuds">Earbuds</SelectItem>
-              <SelectItem value="speakers">Speakers</SelectItem>
-              <SelectItem value="mobile phones">Mobile Phones</SelectItem>
-              <SelectItem value="smart watches">Smart Watches</SelectItem>
-              {categories.filter(Boolean).map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
+              <SelectItem value="ALL">All Categories</SelectItem>
+              {categories.filter(Boolean).map((categoryId) => (
+                <SelectItem key={categoryId} value={categoryId}>
+                  {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -141,9 +136,9 @@ const Shop = () => {
 
       {/* Show selected category heading */}
       <div className="mb-6 text-xl font-semibold">
-        {selectedCategory === 'none'
+        {selectedCategoryId === 'ALL'
           ? 'All Products'
-          : `Category: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}`}
+          : `Category: ${selectedCategoryId.charAt(0).toUpperCase() + selectedCategoryId.slice(1)}`}
       </div>
 
       {/* Products Grid */}
