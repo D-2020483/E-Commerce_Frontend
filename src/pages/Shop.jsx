@@ -45,7 +45,7 @@ const ProductCard = ({
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('none');
   const [sortOrder, setSortOrder] = useState('none');
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +75,11 @@ const Shop = () => {
 
   const filterAndSortProducts = (category, order) => {
     let result = [...products];
-    if (category !== 'none') result = result.filter(p => p.category.toLowerCase() === category.toLowerCase());
+
+    // Filter by category
+    if (category !== 'none') result = result.filter(p => p.category?.toLowerCase() === category.toLowerCase());
+
+    // Sort by price
     if (order !== 'none') {
       result.sort((a, b) => order === 'asc' ? a.price - b.price : b.price - a.price);
     }
@@ -104,6 +108,11 @@ const Shop = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">All Categories</SelectItem>
+              <SelectItem value="headphones">Headphones</SelectItem>
+              <SelectItem value="earbuds">Earbuds</SelectItem>
+              <SelectItem value="speakers">Speakers</SelectItem>
+              <SelectItem value="mobile phones">Mobile Phones</SelectItem>
+              <SelectItem value="smart watches">Smart Watches</SelectItem>
               {categories.filter(Boolean).map((category) => (
                 <SelectItem key={category} value={category}>
                   {category.charAt(0).toUpperCase() + category.slice(1)}
