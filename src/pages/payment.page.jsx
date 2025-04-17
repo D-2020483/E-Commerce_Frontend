@@ -6,15 +6,32 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
+import { useNavigate } from "react-router"
 
 export default function PaymentPage() {
-  const cart = useSelector((state) => state.cart.value)
-  const dispatch = useDispatch()
+  const cart = useSelector((state) => state.cart.value);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
-  )
+  );
+
+  const handlePlaceOrder = () => {
+    // Clear the cart
+    dispatch(clearCart());
+
+    // Show success toast
+    toast.success("Order Placed Successfully", {
+      description: `Total amount: $${totalPrice.toFixed(2)}`,
+      icon: <CheckCircle className="w-5 h-5" />,
+    });
+
+    // Redirect to the CompletePage
+    navigate("/shop/complete");
+  };
+
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -55,18 +72,9 @@ export default function PaymentPage() {
           <div className="text-xl font-bold">
             Total: ${totalPrice.toFixed(2)}
           </div>
-          <Button 
-            disabled={cart.length === 0}
-            onClick={() => {
-              dispatch(clearCart())
-              toast.success("Order Placed Successfully", {
-                description: `Total amount: $${totalPrice.toFixed(2)}`,
-                icon: <CheckCircle className="w-5 h-5" />
-              })
-            }}
-          >
+          <Button onClick={handlePlaceOrder} disabled={cart.length === 0}>
             Place Order
-          </Button>
+          </Button>  
         </CardFooter>
       </Card>
     </main>
