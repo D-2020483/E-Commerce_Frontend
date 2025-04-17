@@ -13,16 +13,35 @@ export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const [createOrder] = useCreateOrderMutation();
 
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
   );
 
-  const handlePlaceOrder = async() => {
+  const handlePlaceOrder = async () => {
     try {
-      const response = await createOrder({ cart, totalPrice }).unwrap();
+      const response = await createOrder({
+        items: cart.map((item) => ({
+          product: {
+            _id: item.product._id,
+            name: item.product.name,
+            price: item.product.price,
+            image: item.product.image,
+            description: item.product.description,
+          },
+          quantity: item.quantity,
+        })),
+        shippingAddress: {
+          line_1: "123 Main St",
+          line_2: "Apt 4B",
+          city: "New York",
+          state: "NY",
+          zip_code: "10001",
+          phone: "+1234567890",
+        },
+      }).unwrap();
 
       const { orderId } = response;
 
@@ -38,12 +57,10 @@ export default function PaymentPage() {
       // Redirect to the CompletePage with the unique orderId
       navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
-      
       toast.error("Failed to place order. Please try again.");
       console.error("Error placing order:", error);
     }
   };
-
 
   return (
     <main className="container mx-auto px-4 py-8">
