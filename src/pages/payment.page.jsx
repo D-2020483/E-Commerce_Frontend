@@ -21,27 +21,27 @@ export default function PaymentPage() {
   );
 
   const handlePlaceOrder = async () => {
-    try {
-      const response = await createOrder({ cart, totalPrice }).unwrap();
-  
-      const { orderId } = response;
-  
-      // Clear the cart
-      dispatch(clearCart());
-  
-      // Show success toast
-      toast.success("Order Placed Successfully", {
-        description: `Total amount: $${totalPrice.toFixed(2)}`,
-        icon: <CheckCircle className="w-5 h-5" />,
-      });
-  
-      // Redirect to the CompletePage with the unique orderId
-      window.location.href = `https://fed-storefront-frontend-dinithi.netlify.app/shop/complete?orderId=${orderId}`;
-    } catch (error) {
-      toast.error("Failed to place order. Please try again.");
-      console.error("Error placing order:", error);
-    }
-  };
+  try {
+    const response = await createOrder({ cart, totalPrice }).unwrap();
+
+    const { orderId } = response;
+
+    // Clear the cart
+    dispatch(clearCart());
+
+    // Show success toast
+    toast.success("Order Placed Successfully", {
+      description: `Total amount: $${totalPrice.toFixed(2)}`,
+      icon: <CheckCircle className="w-5 h-5" />,
+    });
+
+    // Redirect to the CompletePage with the unique orderId
+    navigate(`/shop/complete?orderId=${orderId}`);
+  } catch (error) {
+    toast.error("Failed to place order. Please try again.");
+    console.error("Error placing order:", error);
+  }
+};
 
 
   return (
