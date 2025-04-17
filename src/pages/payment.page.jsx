@@ -20,27 +20,36 @@ export default function PaymentPage() {
     0
   );
 
-  const handlePlaceOrder = async() => {
+  const handlePlaceOrder = async () => {
     try {
+      // Log the payload being sent to the backend
+      console.log("Placing order with payload:", { cart, totalPrice });
+  
+      // Call the mutation to create an order
       const response = await createOrder({ cart, totalPrice }).unwrap();
-
+  
+      // Log the response from the backend
+      console.log("Order created successfully:", response);
+  
       const { orderId } = response;
-
+  
       // Clear the cart
       dispatch(clearCart());
-
+  
       // Show success toast
       toast.success("Order Placed Successfully", {
         description: `Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
-
+  
       // Redirect to the CompletePage with the unique orderId
       navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
-      
-      toast.error("Failed to place order. Please try again.");
+      // Log the error response from the backend
       console.error("Error placing order:", error);
+  
+      // Show error toast
+      toast.error("Failed to place order. Please try again.");
     }
   };
 
