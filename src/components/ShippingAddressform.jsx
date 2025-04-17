@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,16 +32,14 @@ const formSchema = z.object({
 });
 
 const ShippingAddressForm = ({ cart }) => {
-  console.log('Cart data:', JSON.stringify(cart , null, 2));
-  
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
-  const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
+  const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
-  
+
   function handleSubmit(values) {
-    const formattedCart = cart.map(item => ({
+    const formattedCart = cart.map((item) => ({
       product: {
         _id: item.product._id,
         name: item.product.name,
@@ -52,7 +49,7 @@ const ShippingAddressForm = ({ cart }) => {
       },
       quantity: item.quantity,
     }));
-    console.log("Formatted order:", JSON.stringify(formattedCart, null, 2));
+
     createOrder({
       items: formattedCart,
       shippingAddress: {
@@ -67,9 +64,9 @@ const ShippingAddressForm = ({ cart }) => {
       if (response?.data?._id) {
         navigate(`/shop/complete?orderId=${response.data._id}`);
       } else {
-        console.error("Order creation failed:", response.error);    
-  }
-  });
+        console.error("Order creation failed:", response.error);
+      }
+    });
   }
 
   return (
@@ -123,7 +120,7 @@ const ShippingAddressForm = ({ cart }) => {
                 <FormItem>
                   <FormLabel>State/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="Wester Province" {...field} />
+                    <Input placeholder="Western Province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
