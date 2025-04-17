@@ -16,8 +16,16 @@ const ProductCard = ({
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    const item = { _id, name, price, image, quantity: 1 };
-    dispatch(cartSlice.actions.addToCart({ product: item }));
+    dispatch(
+      addToCart({  
+        _id,
+        name,
+        price,
+        image,
+        description,
+        quantity: 1,
+       })
+      );
   };
 
   return (
