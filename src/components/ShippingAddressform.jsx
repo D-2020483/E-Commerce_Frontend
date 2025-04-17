@@ -38,7 +38,8 @@ const ShippingAddressForm = ({ cart }) => {
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
 
-  function handleSubmit(values) {
+  async function handleSubmit(values) {
+    console.log("Form values:", values); // Debugging: Check form values
     const formattedCart = cart.map((item) => ({
       product: {
         _id: item.product._id,
@@ -50,23 +51,33 @@ const ShippingAddressForm = ({ cart }) => {
       quantity: item.quantity,
     }));
 
-    createOrder({
-      items: formattedCart,
-      shippingAddress: {
-        line_1: values.line_1,
-        line_2: values.line_2,
-        city: values.city,
-        state: values.state,
-        zip_code: values.zip_code,
-        phone: values.phone,
-      },
-    }).then((response) => {
+    console.log("Formatted cart:", formattedCart); // Debugging: Check cart data
+
+    try {
+      const response = await createOrder({
+        items: formattedCart,
+        shippingAddress: {
+          line_1: values.line_1,
+          line_2: values.line_2,
+          city: values.city,
+          state: values.state,
+          zip_code: values.zip_code,
+          phone: values.phone,
+        },
+      });
+
+      console.log("Order response:", response); // Debugging: Check API response
+
       if (response?.data?._id) {
         navigate(`/shop/complete?orderId=${response.data._id}`);
       } else {
         console.error("Order creation failed:", response.error);
+        alert("Failed to create order. Please try again.");
       }
-    });
+    } catch (error) {
+      console.error("Error during order creation:", error);
+      alert("An error occurred. Please try again.");
+    }
   }
 
   return (
