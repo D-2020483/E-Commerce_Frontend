@@ -12,35 +12,49 @@ import { addToCart } from '@/lib/features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 
 const ProductCard = ({
-  _id, name, price, image, description,
+  _id, name, price, image, description, stock,
 }) => {
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    dispatch(
-      addToCart({
-        _id,
-        name,
-        price,
-        image,
-        description,
-      })
-    );
+    if (stock > 0) {
+      dispatch(
+        addToCart({
+          _id,
+          name,
+          price,
+          image,
+          description,
+        })
+      );
+    } else {
+      alert('This product is out of stock!');
+    }
   };
 
   return (
     <Card className="hover:shadow-lg transition-all duration-300 group">
       <CardHeader className="relative h-48 overflow-hidden p-0">
         <img src={image} alt={name} className="w-full h-full object-contain" />
-        <Badge variant="secondary" className="absolute top-2 right-2">New</Badge>
+        {stock === 0 && (
+          <Badge variant="destructive" className="absolute top-2 right-2">
+            Out of Stock
+          </Badge>
+        )}
       </CardHeader>
       <CardContent className="p-4">
         <CardTitle className="text-lg font-semibold mb-2">{name}</CardTitle>
         <p className="text-muted-foreground text-sm line-clamp-2">{description}</p>
+        <p className="text-sm text-muted-foreground">Stock: {stock}</p>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <div className="text-xl font-bold text-primary">${Number(price).toFixed(2)}</div>
-        <Button size="sm" variant="outline" onClick={handleAddToCart}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleAddToCart}
+          disabled={stock === 0}
+        >
           <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
         </Button>
       </CardFooter>
@@ -175,6 +189,7 @@ const Shop = () => {
               price={product.price}
               image={product.image}
               description={product.description}
+              stock={product.stock}
             />
           ))}
         </div>
