@@ -99,6 +99,16 @@ function Navigation() {
               >
                 Account
               </Link>
+              <Link
+                to="/myorders"
+                className="text-sm font-medium text-muted-foreground 
+                hover:text-primary transition-colors duration-300 
+                relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] 
+                after:bg-primary after:transition-all after:duration-300 
+                hover:after:w-full"
+              >
+                My Orders
+              </Link>
               <UserButton
                 afterSignOutUrl="/"
                 appearance={{

@@ -1,38 +1,17 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useUser } from "@clerk/clerk-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+import { useGetOrdersByUserIdQuery } from "@/lib/api"
 
 export default function MyOrdersPage() {
-  const { isLoaded, isSignedIn, user } = useUser()
-  const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { isLoaded, isSignedIn } = useUser()
+  const { data: orders = [], isLoading, error } = useGetOrdersByUserIdQuery(undefined, {
+    skip: !isSignedIn,
+  });
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = await window.Clerk?.session?.getToken();
-        const res = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/orders/user/my-orders", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Failed to fetch orders");
-        const data = await res.json();
-        console.log("Orders data:", data);
-        setOrders(data);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    if (isSignedIn) {
-      fetchOrders();
-    }
-  }, [isSignedIn]);
-
-  if (!isLoaded || loading) {
+  if (!isLoaded || isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl space-y-4">
         {[1, 2, 3].map((i) => (
@@ -52,6 +31,15 @@ export default function MyOrdersPage() {
     return (
       <div className="text-center mt-20">
         <h2 className="text-2xl font-semibold mb-4">Please sign in to view your orders</h2>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center mt-20">
+        <h2 className="text-2xl font-semibold mb-4 text-red-500">Error loading orders</h2>
+        <p className="text-gray-600">Please try again later</p>
       </div>
     )
   }
