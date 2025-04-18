@@ -8,12 +8,22 @@ import { CheckCircle2Icon } from "lucide-react";
 function CompletePage() {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("orderId");
-  const { data, isLoading } = useGetOrderQuery(orderId);
+  const { data, isLoading, error } = useGetOrderQuery(orderId);
 
   if (isLoading) {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-2xl text-muted-foreground">Loading...</div>
+      </main>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl text-red-500">
+          {error ? "Failed to load order details." : "Order not found."}
+        </div>
       </main>
     );
   }
