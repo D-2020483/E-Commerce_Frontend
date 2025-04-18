@@ -37,7 +37,7 @@ export default function PaymentPage() {
       });
 
       // Redirect to the Complete page with the orderId as a query parameter
-      navigate(`/complete?orderId=${orderId}`);
+      navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
       // Handle errors
       toast.error("Failed to place the order. Please try again.");
