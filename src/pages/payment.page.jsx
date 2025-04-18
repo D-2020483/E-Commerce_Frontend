@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { ShoppingCart, CheckCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router"; 
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
