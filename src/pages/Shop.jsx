@@ -16,22 +16,42 @@ const ProductCard = ({
 }) => {
   const dispatch = useDispatch();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (stock > 0) {
-      dispatch(
-        addToCart({
-          _id,
-          name,
-          price,
-          image,
-          description,
-        })
-      );
+      try {
+        // Call backend to reduce stock
+        const response = await fetch('https://fed-storefront-backend-dinithi.onrender.com/api/products/reduce-stock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: _id, quantity: 1 }),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          alert(errorData.message || 'Failed to add to cart');
+          return;
+        }
+  
+        // Update stock locally
+        dispatch(
+          addToCart({
+            _id,
+            name,
+            price,
+            image,
+            description,
+          })
+        );
+        alert('Product added to cart!');
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Error adding to cart');
+      }
     } else {
       alert('This product is out of stock!');
     }
   };
-
+  
   return (
     <Card className="hover:shadow-lg transition-all duration-300 group">
       <CardHeader className="relative h-48 overflow-hidden p-0">
