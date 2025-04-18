@@ -41,7 +41,7 @@ const ShippingAddressForm = ({ cart }) => {
   const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
   const navigate = useNavigate();
   
-  function handleSubmit(values) {
+  async function handleSubmit(values) {
     const formattedCart = cart.map(item => ({
       product: {
         _id: item.product._id,
@@ -53,18 +53,32 @@ const ShippingAddressForm = ({ cart }) => {
       quantity: item.quantity,
     }));
     console.log("Formatted order:", JSON.stringify(formattedCart, null, 2));
-    createOrder({
-      items: formattedCart,
-      shippingAddress: {
-        line_1: values.line_1,
-        line_2: values.line_2,
-        city: values.city,
-        state: values.state,
-        zip_code: values.zip_code,
-        phone: values.phone,
-      },
-    });
-    navigate("/shop/payment");
+    
+    try {
+      const response = await createOrder({
+        items: formattedCart,
+        shippingAddress: {
+          line_1: values.line_1,
+          line_2: values.line_2,
+          city: values.city,
+          state: values.state,
+          zip_code: values.zip_code,
+          phone: values.phone,
+        },
+      }).unwrap();
+      
+      // Store the order ID in sessionStorage for the payment page
+      if (response && response._id) {
+        sessionStorage.setItem('currentOrderId', response._id);
+      } else {
+        // For demo purposes, store a placeholder ID
+        sessionStorage.setItem('currentOrderId', '12345');
+      }
+      
+      navigate("/shop/payment");
+    } catch (error) {
+      console.error("Failed to create order:", error);
+    }
   }
 
   return (
