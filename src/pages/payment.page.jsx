@@ -6,13 +6,11 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
-import { useNavigate } from "react-router"
 
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -21,13 +19,13 @@ export default function PaymentPage() {
 
   const handlePlaceOrder = async () => {
     try {
-      // Since the order is already created in the checkout step,
-      // here we just need to simulate getting the order ID
-      // In a real implementation, we would get this from the checkout response
-      
-      // Simulate getting the orderId
-      const orderId = sessionStorage.getItem('currentOrderId') || "12345";
-      
+      // Simulate an API call to place the order
+      const response = await new Promise((resolve) =>
+        setTimeout(() => resolve({ orderId: "12345" }), 1000)
+      );
+
+      const { orderId } = response;
+
       // Clear the cart
       dispatch(clearCart());
 
@@ -36,12 +34,8 @@ export default function PaymentPage() {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
-      
-      // Navigate to complete page with orderId parameter
-      navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
       // Handle errors
-      console.error("Order placement error:", error);
       toast.error("Failed to place the order. Please try again.");
     }
   };
