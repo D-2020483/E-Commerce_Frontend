@@ -37,6 +37,14 @@ const ShippingAddressForm = ({ cart }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      line_1: "",
+      line_2: "",
+      city: "",
+      state: "",
+      zip_code: "",
+      phone: "",
+    },
   });
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
@@ -50,19 +58,20 @@ const ShippingAddressForm = ({ cart }) => {
     setIsSubmitting(true);
     
     try {
+      // Format the cart items according to the backend schema
       const formattedCart = cart.map(item => ({
         product: {
           _id: item.product._id,
           name: item.product.name,
-          price: item.product.price,
-          image: item.product.image,
+          price: item.product.price.toString(), // Convert to string as required by backend
+          image: item.product.image || "",
           description: item.product.description || "No description available",
         },
         quantity: item.quantity,
       }));
 
-      // Create the order
-      const response = await createOrder({
+      // Create the order with the formatted data
+      const orderData = {
         items: formattedCart,
         shippingAddress: {
           line_1: values.line_1,
@@ -72,16 +81,36 @@ const ShippingAddressForm = ({ cart }) => {
           zip_code: values.zip_code,
           phone: values.phone,
         },
-      }).unwrap();
+      };
+
+      console.log("Sending order data:", orderData);
+
+      const response = await createOrder(orderData).unwrap();
+      console.log("Order creation response:", response);
+
+      if (!response || !response._id) {
+        throw new Error("Invalid response from server - missing order ID");
+      }
 
       // Store the order ID in session storage
       sessionStorage.setItem('currentOrderId', response._id);
+      
+      // Show success message
+      toast.success("Order created successfully!");
       
       // Navigate to payment page
       navigate("/shop/payment");
     } catch (error) {
       console.error("Failed to create order:", error);
-      toast.error("Failed to create order. Please try again.");
+      
+      // Show more specific error message
+      if (error.status === 401) {
+        toast.error("Please sign in to place an order");
+      } else if (error.data?.message) {
+        toast.error(error.data.message);
+      } else {
+        toast.error("Failed to create order. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -172,7 +201,7 @@ const ShippingAddressForm = ({ cart }) => {
             />
           </div>
           <div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="mt-4" disabled={isSubmitting}>
               {isSubmitting ? "Processing..." : "Proceed to Payment"}
             </Button>
           </div>

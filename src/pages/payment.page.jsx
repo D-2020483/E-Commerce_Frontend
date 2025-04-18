@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { clearCart } from "@/lib/features/cartSlice"
@@ -13,6 +13,7 @@ export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isProcessing, setIsProcessing] = useState(false);
   
   // Check for valid order ID when component mounts
   useEffect(() => {
@@ -29,7 +30,11 @@ export default function PaymentPage() {
   );
 
   const handlePlaceOrder = async () => {
+    if (isProcessing) return;
+    
     try {
+      setIsProcessing(true);
+      
       const orderId = sessionStorage.getItem('currentOrderId');
       
       if (!orderId) {
@@ -55,6 +60,8 @@ export default function PaymentPage() {
     } catch (error) {
       console.error("Order placement error:", error);
       toast.error("Failed to place the order. Please try again.");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -97,8 +104,11 @@ export default function PaymentPage() {
           <div className="text-xl font-bold">
             Total: ${totalPrice.toFixed(2)}
           </div>
-          <Button onClick={handlePlaceOrder} disabled={cart.length === 0}>
-            Place Order
+          <Button 
+            onClick={handlePlaceOrder} 
+            disabled={cart.length === 0 || isProcessing}
+          >
+            {isProcessing ? "Processing..." : "Place Order"}
           </Button>  
         </CardFooter>
       </Card>
