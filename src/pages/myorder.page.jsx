@@ -55,7 +55,6 @@ export default function MyOrdersPage() {
     )
   }
 
-  
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl space-y-4">
       <h2 className="text-2xl font-semibold mb-4">My Orders</h2>
@@ -63,18 +62,30 @@ export default function MyOrdersPage() {
         <p className="text-center">No orders found.</p>
       ) : (
         orders.map((order) => (
-          <Card key={order.id} className="mb-4">
+          <Card key={order._id} className="mb-4">
             <CardHeader className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
-              <Badge variant="outline">{order.status}</Badge>
+              <h3 className="text-lg font-semibold">Order #{order._id.slice(-6)}</h3>
+              <Badge variant="outline">{order.orderStatus}</Badge>
             </CardHeader>
             <CardContent className="p-6 space-y-2">
-              <p>Total Amount: ${order.totalAmount}</p>
-              <p>Order Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+              <div className="space-y-2">
+                {order.items.map((item, index) => (
+                  <div key={index} className="flex justify-between">
+                    <span>{item.product.name} x {item.quantity}</span>
+                    <span>${(parseFloat(item.product.price) * item.quantity).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="border-t pt-2 mt-2">
+                <div className="flex justify-between font-semibold">
+                  <span>Total</span>
+                  <span>${order.items.reduce((total, item) => total + (parseFloat(item.product.price) * item.quantity), 0).toFixed(2)}</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))
       )}
     </div>
   )
-};
+}
