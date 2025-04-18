@@ -6,13 +6,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { ShoppingCart, CheckCircle } from "lucide-react";
-import { useNavigate } from "react-router"; 
+import { useNavigate } from "react-router";
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
-  
+  const navigate = useNavigate();
+
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
@@ -20,14 +20,39 @@ export default function PaymentPage() {
 
   const handlePlaceOrder = async () => {
     try {
-      
-      const response = await new Promise((resolve) =>
-        setTimeout(() => resolve({ orderId: "12345" }), 1000)
-      );
+      // Prepare the order data to send to the backend
+      const orderData = {
+        items: cart.map((item) => ({
+          product: {
+            _id: item.product._id,
+            name: item.product.name,
+            price: item.product.price,
+            image: item.product.image,
+            description: item.product.description,
+          },
+          quantity: item.quantity,
+        })),
+        totalAmount: totalPrice,
+        userId: "user_2ssdkR3frHTMU1SRkCIQqVns8eI",
+        addressId: "_id",
+      };
 
-      const { orderId } = response;
+      // Make an API call to the backend to create the order
+      const response = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
 
-      
+      if (!response.ok) {
+        throw new Error("Failed to place the order");
+      }
+
+      const { orderId } = await response.json();
+
+      // Clear the cart
       dispatch(clearCart());
 
       // Show success toast
