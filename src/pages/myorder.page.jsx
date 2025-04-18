@@ -13,11 +13,12 @@ export default function MyOrdersPage() {
     const fetchOrders = async () => {
       try {
         const token = await window.Clerk?.session?.getToken();
-        const res = await fetch("/api/orders/user/my-orders", {
+        const res = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/orders/user/my-orders", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch orders");
         const data = await res.json();
+        console.log("Orders data:", data);
         setOrders(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
