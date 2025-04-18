@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { clearCart } from "@/lib/features/cartSlice"
@@ -6,11 +6,22 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
+import { useNavigate } from "react-router"
 
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  // Check for valid order ID when component mounts
+  useEffect(() => {
+    const orderId = sessionStorage.getItem('currentOrderId');
+    if (!orderId) {
+      toast.error("No order found. Please complete checkout first.");
+      navigate('/shop/checkout');
+    }
+  }, [navigate]);
   
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -19,12 +30,13 @@ export default function PaymentPage() {
 
   const handlePlaceOrder = async () => {
     try {
-      // Simulate an API call to place the order
-      const response = await new Promise((resolve) =>
-        setTimeout(() => resolve({ orderId: "12345" }), 1000)
-      );
-
-      const { orderId } = response;
+      const orderId = sessionStorage.getItem('currentOrderId');
+      
+      if (!orderId) {
+        toast.error("No order found. Please complete checkout first.");
+        navigate('/shop/checkout');
+        return;
+      }
 
       // Clear the cart
       dispatch(clearCart());
@@ -34,12 +46,17 @@ export default function PaymentPage() {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
+      
+      // Clear the order ID from session storage as it's no longer needed
+      sessionStorage.removeItem('currentOrderId');
+      
+      // Navigate to complete page with orderId parameter
+      navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
-      // Handle errors
+      console.error("Order placement error:", error);
       toast.error("Failed to place the order. Please try again.");
     }
   };
-
 
   return (
     <main className="container mx-auto px-4 py-8">
