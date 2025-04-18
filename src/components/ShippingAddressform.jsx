@@ -37,6 +37,14 @@ const ShippingAddressForm = ({ cart }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      line_1: "",
+      line_2: "",
+      city: "",
+      state: "",
+      zip_code: "",
+      phone: "",
+    },
   });
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
@@ -50,38 +58,57 @@ const ShippingAddressForm = ({ cart }) => {
     setIsSubmitting(true);
     
     try {
+      // Format cart items according to the backend schema
       const formattedCart = cart.map(item => ({
         product: {
           _id: item.product._id,
           name: item.product.name,
-          price: item.product.price,
-          image: item.product.image,
+          price: String(item.product.price), // Convert price to string
+          image: item.product.image || "",
           description: item.product.description || "No description available",
         },
         quantity: item.quantity,
       }));
 
+      // Log the request data for debugging
+      console.log("Sending order request:", {
+        items: formattedCart,
+        shippingAddress: values
+      });
+
       // Create the order
       const response = await createOrder({
         items: formattedCart,
-        shippingAddress: {
-          line_1: values.line_1,
-          line_2: values.line_2,
-          city: values.city,
-          state: values.state,
-          zip_code: values.zip_code,
-          phone: values.phone,
-        },
+        shippingAddress: values,
       }).unwrap();
 
-      // Store the order ID in session storage
-      sessionStorage.setItem('currentOrderId', response._id);
-      
-      // Navigate to payment page
-      navigate("/shop/payment");
+      console.log("Order creation response:", response);
+
+      if (!response) {
+        throw new Error("No response received from server");
+      }
+
+      // Store the order ID and navigate
+      if (response._id) {
+        sessionStorage.setItem('currentOrderId', response._id);
+        toast.success("Order created successfully!");
+        navigate("/shop/payment");
+      } else {
+        throw new Error("No order ID received");
+      }
     } catch (error) {
       console.error("Failed to create order:", error);
-      toast.error("Failed to create order. Please try again.");
+      
+      // Handle different types of errors
+      if (error.status === 401) {
+        toast.error("Please sign in to place an order");
+      } else if (error.data?.message) {
+        toast.error(error.data.message);
+      } else if (error.message) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to create order. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -172,7 +199,7 @@ const ShippingAddressForm = ({ cart }) => {
             />
           </div>
           <div>
-            <Button type="submit" className="mt-4" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Processing..." : "Proceed to Payment"}
             </Button>
           </div>
