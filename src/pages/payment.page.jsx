@@ -34,7 +34,7 @@ export default function PaymentPage() {
         })),
         totalAmount: totalPrice,
         userId: "user_2ssdkR3frHTMU1SRkCIQqVns8eI",
-        addressId: "_id",
+        addressId: "objectId",
       };
 
       // Make an API call to the backend to create the order
