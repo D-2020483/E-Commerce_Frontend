@@ -1,16 +1,17 @@
-import React from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { clearCart } from "@/lib/features/cartSlice"
-import { useSelector } from "react-redux"
-import { useDispatch } from "react-redux"
-import { toast } from "sonner"
-import { ShoppingCart, CheckCircle } from "lucide-react"
-
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { clearCart } from "@/lib/features/cartSlice";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { ShoppingCart, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom"; 
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -19,14 +20,14 @@ export default function PaymentPage() {
 
   const handlePlaceOrder = async () => {
     try {
-      // Simulate an API call to place the order
+      
       const response = await new Promise((resolve) =>
         setTimeout(() => resolve({ orderId: "12345" }), 1000)
       );
 
       const { orderId } = response;
 
-      // Clear the cart
+      
       dispatch(clearCart());
 
       // Show success toast
@@ -34,12 +35,14 @@ export default function PaymentPage() {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
+
+      // Redirect to the Complete page with the orderId as a query parameter
+      navigate(`/complete?orderId=${orderId}`);
     } catch (error) {
       // Handle errors
       toast.error("Failed to place the order. Please try again.");
     }
   };
-
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -86,5 +89,5 @@ export default function PaymentPage() {
         </CardFooter>
       </Card>
     </main>
-  )
+  );
 }
