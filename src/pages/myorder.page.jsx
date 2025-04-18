@@ -12,21 +12,24 @@ export default function MyOrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("/api/orders/me", { cache: "no-store" })
-        if (!res.ok) throw new Error("Failed to fetch orders")
-        const data = await res.json()
-        setOrders(data)
+        const token = await window.Clerk?.session?.getToken();
+        const res = await fetch("/api/orders/user/my-orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data);
       } catch (error) {
-        console.error("Error fetching orders:", error)
+        console.error("Error fetching orders:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-
+    };
+  
     if (isSignedIn) {
-      fetchOrders()
+      fetchOrders();
     }
-  }, [isSignedIn])
+  }, [isSignedIn]);
 
   if (!isLoaded || loading) {
     return (
@@ -52,28 +55,26 @@ export default function MyOrdersPage() {
     )
   }
 
+  
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6">My Orders</h1>
-
+    <div className="container mx-auto px-4 py-8 max-w-3xl space-y-4">
+      <h2 className="text-2xl font-semibold mb-4">My Orders</h2>
       {orders.length === 0 ? (
-        <p className="text-muted-foreground">You haven't placed any orders yet.</p>
+        <p className="text-center">No orders found.</p>
       ) : (
         orders.map((order) => (
           <Card key={order.id} className="mb-4">
-            <CardHeader className="p-4 border-b">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">Order ID: {order.id}</h2>
-                <Badge variant="outline" className="capitalize">{order.status}</Badge>
-              </div>
+            <CardHeader className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
+              <Badge variant="outline">{order.status}</Badge>
             </CardHeader>
-            <CardContent className="p-4">
-              <p className="text-sm">Date: {new Date(order.createdAt).toLocaleString()}</p>
-              <p className="text-sm">Total: $ {order.total.toFixed(2)}</p>
+            <CardContent className="p-6 space-y-2">
+              <p>Total Amount: ${order.totalAmount}</p>
+              <p>Order Date: {new Date(order.createdAt).toLocaleDateString()}</p>
             </CardContent>
           </Card>
         ))
       )}
     </div>
   )
-}
+};
