@@ -37,14 +37,6 @@ const ShippingAddressForm = ({ cart }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      line_1: "",
-      line_2: "",
-      city: "",
-      state: "",
-      zip_code: "",
-      phone: "",
-    },
   });
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
@@ -58,57 +50,38 @@ const ShippingAddressForm = ({ cart }) => {
     setIsSubmitting(true);
     
     try {
-      // Format cart items according to the backend schema
       const formattedCart = cart.map(item => ({
         product: {
           _id: item.product._id,
           name: item.product.name,
-          price: String(item.product.price), // Convert price to string
-          image: item.product.image || "",
+          price: item.product.price,
+          image: item.product.image,
           description: item.product.description || "No description available",
         },
         quantity: item.quantity,
       }));
 
-      // Log the request data for debugging
-      console.log("Sending order request:", {
-        items: formattedCart,
-        shippingAddress: values
-      });
-
       // Create the order
       const response = await createOrder({
         items: formattedCart,
-        shippingAddress: values,
+        shippingAddress: {
+          line_1: values.line_1,
+          line_2: values.line_2,
+          city: values.city,
+          state: values.state,
+          zip_code: values.zip_code,
+          phone: values.phone,
+        },
       }).unwrap();
 
-      console.log("Order creation response:", response);
-
-      if (!response) {
-        throw new Error("No response received from server");
-      }
-
-      // Store the order ID and navigate
-      if (response._id) {
-        sessionStorage.setItem('currentOrderId', response._id);
-        toast.success("Order created successfully!");
-        navigate("/shop/payment");
-      } else {
-        throw new Error("No order ID received");
-      }
+      // Store the order ID in session storage
+      sessionStorage.setItem('currentOrderId', response._id);
+      
+      // Navigate to payment page
+      navigate("/shop/payment");
     } catch (error) {
       console.error("Failed to create order:", error);
-      
-      // Handle different types of errors
-      if (error.status === 401) {
-        toast.error("Please sign in to place an order");
-      } else if (error.data?.message) {
-        toast.error(error.data.message);
-      } else if (error.message) {
-        toast.error(error.message);
-      } else {
-        toast.error("Failed to create order. Please try again.");
-      }
+      toast.error("Failed to create order. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -117,14 +90,14 @@ const ShippingAddressForm = ({ cart }) => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className="grid grid-cols-2 gap-y-2 gap-x-4">
             <FormField
               control={form.control}
               name="line_1"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address Line 1</FormLabel>
+                  <FormLabel>Line 1</FormLabel>
                   <FormControl>
                     <Input placeholder="16/1" {...field} />
                   </FormControl>
@@ -165,7 +138,7 @@ const ShippingAddressForm = ({ cart }) => {
                 <FormItem>
                   <FormLabel>State/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="Western Province" {...field} />
+                    <Input placeholder="Wester Province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -198,10 +171,8 @@ const ShippingAddressForm = ({ cart }) => {
               )}
             />
           </div>
-          <div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Processing..." : "Proceed to Payment"}
-            </Button>
+          <div className="mt-4">
+            <Button type="submit">Proceed to Payment</Button>
           </div>
         </form>
       </Form>
