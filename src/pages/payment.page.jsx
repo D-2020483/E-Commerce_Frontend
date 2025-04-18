@@ -1,18 +1,17 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { clearCart } from "@/lib/features/cartSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { toast } from "sonner";
-import { ShoppingCart, CheckCircle } from "lucide-react";
-import { useNavigate } from "react-router";
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { clearCart } from "@/lib/features/cartSlice"
+import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
+import { toast } from "sonner"
+import { ShoppingCart, CheckCircle } from "lucide-react"
+
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+  
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
@@ -20,37 +19,12 @@ export default function PaymentPage() {
 
   const handlePlaceOrder = async () => {
     try {
-      // Prepare the order data to send to the backend
-      const orderData = {
-        items: cart.map((item) => ({
-          product: {
-            _id: item.product._id,
-            name: item.product.name,
-            price: item.product.price,
-            image: item.product.image,
-            description: item.product.description,
-          },
-          quantity: item.quantity,
-        })),
-        totalAmount: totalPrice,
-        userId: "user_2ssdkR3frHTMU1SRkCIQqVns8eI",
-        addressId: "objectId",
-      };
+      // Simulate an API call to place the order
+      const response = await new Promise((resolve) =>
+        setTimeout(() => resolve({ orderId: "12345" }), 1000)
+      );
 
-      // Make an API call to the backend to create the order
-      const response = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to place the order");
-      }
-
-      const { orderId } = await response.json();
+      const { orderId } = response;
 
       // Clear the cart
       dispatch(clearCart());
@@ -60,14 +34,12 @@ export default function PaymentPage() {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
-
-      // Redirect to the Complete page with the orderId as a query parameter
-      navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
       // Handle errors
       toast.error("Failed to place the order. Please try again.");
     }
   };
+
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -114,5 +86,5 @@ export default function PaymentPage() {
         </CardFooter>
       </Card>
     </main>
-  );
+  )
 }
