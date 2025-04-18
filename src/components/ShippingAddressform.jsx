@@ -23,13 +23,8 @@ const formSchema = z.object({
   state: z.string().min(1, "State/Province is required"),
   zip_code: z.string().min(1, "Zip Code is required"),
   phone: z.string().refine(
-    (value) => {
-      // This regex checks for a basic international phone number format
-      return /^\+?[1-9]\d{1,14}$/.test(value);
-    },
-    {
-      message: "Invalid phone number format",
-    }
+    (value) => /^\+?[1-9]\d{1,14}$/.test(value),
+    { message: "Invalid phone number format" }
   ),
 });
 
@@ -40,7 +35,7 @@ const ShippingAddressForm = ({ cart }) => {
   });
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
-  
+
   async function handleSubmit(values) {
     if (cart.length === 0) {
       toast.error("Your cart is empty");
@@ -48,9 +43,9 @@ const ShippingAddressForm = ({ cart }) => {
     }
 
     setIsSubmitting(true);
-    
+
     try {
-      const formattedCart = cart.map(item => ({
+      const formattedCart = cart.map((item) => ({
         product: {
           _id: item.product._id,
           name: item.product.name,
@@ -61,7 +56,6 @@ const ShippingAddressForm = ({ cart }) => {
         quantity: item.quantity,
       }));
 
-      // Create the order
       const response = await createOrder({
         items: formattedCart,
         shippingAddress: {
@@ -74,10 +68,7 @@ const ShippingAddressForm = ({ cart }) => {
         },
       }).unwrap();
 
-      // Store the order ID in session storage
-      sessionStorage.setItem('currentOrderId', response._id);
-      
-      // Navigate to payment page
+      sessionStorage.setItem("currentOrderId", response._id);
       navigate("/shop/payment");
     } catch (error) {
       console.error("Failed to create order:", error);
@@ -138,7 +129,7 @@ const ShippingAddressForm = ({ cart }) => {
                 <FormItem>
                   <FormLabel>State/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="Wester Province" {...field} />
+                    <Input placeholder="Western Province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -172,7 +163,9 @@ const ShippingAddressForm = ({ cart }) => {
             />
           </div>
           <div className="mt-4">
-            <Button type="submit">Proceed to Payment</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Proceed to Payment"}
+            </Button>
           </div>
         </form>
       </Form>

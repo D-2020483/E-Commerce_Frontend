@@ -14,7 +14,6 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Check for valid order ID when component mounts
   useEffect(() => {
     const orderId = sessionStorage.getItem("currentOrderId");
     if (!orderId) {
@@ -35,30 +34,20 @@ export default function PaymentPage() {
       setIsProcessing(true);
 
       const orderId = sessionStorage.getItem("currentOrderId");
-
       if (!orderId) {
-        console.error("Order ID not found in sessionStorage.");
         toast.error("No order found. Please complete checkout first.");
         navigate("/shop/checkout");
         return;
       }
 
-      // Simulate order placement (replace with actual API call if needed)
-      console.log("Placing order with ID:", orderId);
-
-      // Clear the cart
       dispatch(clearCart());
 
-      // Show success toast
       toast.success("Order Placed Successfully", {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
 
-      // Clear the order ID from session storage as it's no longer needed
       sessionStorage.removeItem("currentOrderId");
-
-      // Navigate to complete page with orderId parameter
       navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
       console.error("Order placement error:", error);
