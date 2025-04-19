@@ -5,8 +5,20 @@ export const Api = createApi({
   baseQuery: fetchBaseQuery({ 
     baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/",
     prepareHeaders: async (headers, { getState }) => {
+      // Wait a bit to ensure token is available
+      const waitForToken = async () => {
+        let token = localStorage.getItem('clerk-token');
+        let attempts = 0;
+        while (!token && attempts < 3) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          token = localStorage.getItem('clerk-token');
+          attempts++;
+        }
+        return token;
+      };
+
       try {
-        const token = localStorage.getItem('clerk-token');
+        const token = await waitForToken();
         if (token) {
           headers.set("Authorization", `Bearer ${token}`);
         }

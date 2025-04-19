@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useUser, useAuth } from "@clerk/clerk-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 export default function MyOrdersPage() {
   const { isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
+  const [tokenUpdated, setTokenUpdated] = useState(false);
   
   // Set token in localStorage when auth state changes
   useEffect(() => {
@@ -18,27 +19,30 @@ export default function MyOrdersPage() {
         try {
           const token = await getToken();
           localStorage.setItem('clerk-token', token);
+          setTokenUpdated(true);
         } catch (error) {
           console.error('Error getting auth token:', error);
+          setTokenUpdated(false);
         }
       } else {
         localStorage.removeItem('clerk-token');
+        setTokenUpdated(false);
       }
     };
     updateToken();
   }, [isSignedIn, getToken]);
 
   const { data: orders, isLoading, error, refetch } = useGetOrdersByUserIdQuery(undefined, {
-    skip: !isSignedIn || !isLoaded,
+    skip: !isSignedIn || !isLoaded || !tokenUpdated,
     refetchOnMountOrArgChange: true
   });
 
   // Refetch orders when auth state changes
   useEffect(() => {
-    if (isSignedIn && isLoaded) {
+    if (isSignedIn && isLoaded && tokenUpdated) {
       refetch();
     }
-  }, [isSignedIn, isLoaded, refetch]);
+  }, [isSignedIn, isLoaded, tokenUpdated, refetch]);
 
   if (!isLoaded || isLoading) {
     return (
