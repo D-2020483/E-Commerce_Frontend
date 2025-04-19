@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { clearCart } from "@/lib/features/cartSlice"
-import { useSelector } from "react-redux"
-import { useDispatch } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
 import { useNavigate } from "react-router"
+import { useUpdateOrderMutation } from "@/lib/api"
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [updateOrder] = useUpdateOrderMutation();
   
-  // Check for valid order ID when component mounts
   useEffect(() => {
     const orderId = sessionStorage.getItem('currentOrderId');
     console.log("Current orderId in payment:", orderId);
@@ -44,8 +44,12 @@ export default function PaymentPage() {
         return;
       }
 
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Update order status to PAID
+      await updateOrder({ 
+        orderId,
+        type: "succeeded",
+        data: { orderId }
+      }).unwrap();
 
       // Clear the cart
       dispatch(clearCart());
