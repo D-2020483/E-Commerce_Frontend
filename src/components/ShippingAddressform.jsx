@@ -55,6 +55,13 @@ const ShippingAddressForm = ({ cart }) => {
       const token = await getToken();
       console.log("Authentication token present:", !!token);
 
+      // Validate cart items
+      if (!Array.isArray(cart) || cart.some(item => !item.product?._id || !item.quantity)) {
+        console.error("Invalid cart structure:", cart);
+        toast.error("Invalid cart data");
+        return;
+      }
+
       const formattedCart = cart.map((item) => ({
         product: {
           _id: item.product._id,
@@ -70,7 +77,7 @@ const ShippingAddressForm = ({ cart }) => {
         items: formattedCart,
         shippingAddress: {
           line_1: values.line_1,
-          line_2: values.line_2 || "",
+          line_2: values.line_2 || "Not provided",
           city: values.city,
           state: values.state,
           zip_code: values.zip_code,
@@ -78,7 +85,9 @@ const ShippingAddressForm = ({ cart }) => {
         },
       };
   
-      console.log("Payload being sent to createOrder:", payload);
+      console.log("Cart items:", cart);
+      console.log("Formatted cart:", formattedCart);
+      console.log("Full payload being sent to createOrder:", JSON.stringify(payload, null, 2));
   
       const response = await createOrder(payload).unwrap();
   
