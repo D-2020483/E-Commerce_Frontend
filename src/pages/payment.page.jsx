@@ -5,7 +5,7 @@ import { clearCart } from "@/lib/features/cartSlice"
 import { useSelector, useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { useUpdateOrderMutation } from "@/lib/api"
 
 export default function PaymentPage() {
