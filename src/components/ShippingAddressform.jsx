@@ -62,32 +62,62 @@ const ShippingAddressForm = ({ cart }) => {
         return;
       }
 
+      // Log the raw cart data for debugging
+      console.log("Raw cart item example:", cart[0]);
+
       const formattedCart = cart.map((item) => ({
         product: {
-          _id: item.product._id,
-          name: item.product.name,
-          price: item.product.price,
-          image: item.product.image,
-          description: item.product.description || "No description available",
+          _id: String(item.product._id),
+          name: String(item.product.name),
+          price: String(item.product.price), 
+          image: String(item.product.image),
+          description: String(item.product.description || "No description available"),
         },
-        quantity: item.quantity,
+        quantity: Number(item.quantity), 
       }));
   
       const payload = {
         items: formattedCart,
         shippingAddress: {
-          line_1: values.line_1,
-          line_2: values.line_2 || "Not provided",
-          city: values.city,
-          state: values.state,
-          zip_code: values.zip_code,
-          phone: values.phone,
+          line_1: String(values.line_1).trim(),
+          line_2: String(values.line_2 || "Not provided").trim(),
+          city: String(values.city).trim(),
+          state: String(values.state).trim(),
+          zip_code: String(values.zip_code).trim(),
+          phone: String(values.phone).trim(),
         },
       };
   
-      console.log("Cart items:", cart);
-      console.log("Formatted cart:", formattedCart);
-      console.log("Full payload being sent to createOrder:", JSON.stringify(payload, null, 2));
+      // Detailed validation logging
+      console.log("Raw cart data:", JSON.stringify(cart, null, 2));
+      console.log("Formatted cart:", JSON.stringify(formattedCart, null, 2));
+      console.log("Full payload:", JSON.stringify(payload, null, 2));
+      
+      // Validate payload structure matches backend schema
+      const validationCheck = {
+        hasValidItems: payload.items.every(item => 
+          item.product._id && 
+          item.product.name && 
+          item.product.price && 
+          item.product.image && 
+          item.product.description &&
+          typeof item.quantity === 'number'
+        ),
+        hasValidAddress: Boolean(
+          payload.shippingAddress.line_1 &&
+          payload.shippingAddress.line_2 &&
+          payload.shippingAddress.city &&
+          payload.shippingAddress.state &&
+          payload.shippingAddress.zip_code &&
+          payload.shippingAddress.phone
+        )
+      };
+      
+      console.log("Validation check:", validationCheck);
+
+      if (!validationCheck.hasValidItems || !validationCheck.hasValidAddress) {
+        throw new Error("Invalid payload structure");
+      }
   
       const response = await createOrder(payload).unwrap();
   
