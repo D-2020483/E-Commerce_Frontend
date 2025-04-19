@@ -12,41 +12,26 @@ import { addToCart } from '@/lib/features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 
 const ProductCard = ({
-  _id, name, price, image, description, stock,
+  _id, name, price, image, description, variants
 }) => {
   const dispatch = useDispatch();
+  
+  // Get default variant or first available variant
+  const defaultVariant = variants?.find(v => v.name === 'default') || variants?.[0];
+  const stock = defaultVariant?.stock || 0;
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (stock > 0) {
-      try {
-        // Call backend to reduce stock
-        const response = await fetch('https://fed-storefront-backend-dinithi.onrender.com/api/products/reduce-stock', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ productId: _id, quantity: 1 }),
-        });
-  
-        if (!response.ok) {
-          const errorData = await response.json();
-          alert(errorData.message || 'Failed to add to cart');
-          return;
-        }
-  
-        // Update stock locally
-        dispatch(
-          addToCart({
-            _id,
-            name,
-            price,
-            image,
-            description,
-          })
-        );
-        alert('Product added to cart!');
-      } catch (error) {
-        console.error('Error adding to cart:', error);
-        alert('Error adding to cart');
-      }
+      dispatch(
+        addToCart({
+          _id,
+          name,
+          price,
+          image,
+          description,
+        })
+      );
+      alert('Product added to cart!');
     } else {
       alert('This product is out of stock!');
     }
@@ -131,15 +116,44 @@ const Shop = () => {
 
     fetchProductsAndCategories();
 
-    // Listen for stock updates from the admin page
-    const handleRefresh = () => {
-      refreshProducts();
+    // Listen for stock updates
+    const handleStockUpdate = (event) => {
+      const { productId, newStock } = event.detail;
+      setProducts(prevProducts => 
+        prevProducts.map(product => {
+          if (product._id === productId) {
+            return {
+              ...product,
+              variants: [{
+                name: 'default',
+                stock: newStock
+              }]
+            };
+          }
+          return product;
+        })
+      );
+      
+      setFilteredProducts(prevFiltered => 
+        prevFiltered.map(product => {
+          if (product._id === productId) {
+            return {
+              ...product,
+              variants: [{
+                name: 'default',
+                stock: newStock
+              }]
+            };
+          }
+          return product;
+        })
+      );
     };
 
-    window.addEventListener('refreshProducts', handleRefresh);
+    window.addEventListener('stockUpdated', handleStockUpdate);
 
     return () => {
-      window.removeEventListener('refreshProducts', handleRefresh);
+      window.removeEventListener('stockUpdated', handleStockUpdate);
     };
   }, []);
 
@@ -233,7 +247,7 @@ const Shop = () => {
               price={product.price}
               image={product.image}
               description={product.description}
-              stock={product.stock}
+              variants={product.variants}
             />
           ))}
         </div>

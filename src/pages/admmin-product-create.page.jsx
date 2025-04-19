@@ -177,6 +177,15 @@ const AdminCreateProductPage = () => {
                 }
                 return p;
             }));
+
+            // Dispatch event to notify other components
+            window.dispatchEvent(new CustomEvent('stockUpdated', {
+                detail: {
+                    productId,
+                    newStock: stock
+                }
+            }));
+            
         } catch (error) {
             console.error('Error updating stock:', error);
             toast.error(error.message || 'Failed to update stock');
@@ -308,4 +317,4 @@ const AdminCreateProductPage = () => {
     );
 };
 
-export default AdminCreateProductPage;          
+export default AdminCreateProductPage;
