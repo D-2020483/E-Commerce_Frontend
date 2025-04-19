@@ -11,7 +11,7 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import CartPage from './pages/cart.page.jsx';
 import CheckoutPage from './pages/checkout.page.jsx';
 import PaymentPage from './pages/payment.page.jsx';
-import AdminCreateProductPage from './pages/admmin-product-create.page.jsx';
+import AdminCreateProductPage from './pages/admmin-product-create.page.jsxz';
 import Shop from './pages/Shop';
 import MyOrdersPage from './pages/myorder.page.jsx';
 
