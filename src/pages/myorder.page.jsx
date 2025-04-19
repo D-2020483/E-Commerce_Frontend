@@ -12,6 +12,20 @@ export default function MyOrdersPage() {
   const { isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
   const navigate = useNavigate();
+  
+  // Set token in localStorage when auth state changes
+  useEffect(() => {
+    const updateToken = async () => {
+      if (isSignedIn) {
+        const token = await getToken();
+        localStorage.setItem('clerk-token', token);
+      } else {
+        localStorage.removeItem('clerk-token');
+      }
+    };
+    updateToken();
+  }, [isSignedIn, getToken]);
+
   const { data: orders, isLoading, error, refetch } = useGetOrdersByUserIdQuery(undefined, {
     // Skip the query if not signed in
     skip: !isSignedIn

@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getAuth } from "@clerk/clerk-react";
 
 export const Api = createApi({
   reducerPath: "Api",
@@ -7,7 +6,8 @@ export const Api = createApi({
     baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/",
     prepareHeaders: async (headers, { getState }) => {
       try {
-        const token = await getAuth().getToken();
+        // The token will be passed through the component
+        const token = localStorage.getItem('clerk-token');
         if (token) {
           headers.set("Authorization", `Bearer ${token}`);
         }
