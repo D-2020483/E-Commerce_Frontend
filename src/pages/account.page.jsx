@@ -16,6 +16,7 @@ import {
 export default function AccountPage() {
   const { isLoaded, isSignedIn, user } = useUser()
   const { signOut } = useAuth()
+  const navigate = useNavigate()
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   // Apply dark mode class to the body
@@ -177,14 +178,14 @@ export default function AccountPage() {
               <h2 className="text-xl font-bold">My Orders</h2>
             </CardHeader>
             <CardContent className="p-6">
-              <p>
-                <a
-                  href="/my-orders"
-                  className="text-blue-500 underline hover:text-blue-700"
-                >
-                  View your orders here
-                </a>
-              </p>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate("/my-orders")}
+              >
+                <PackageIcon className="mr-2 h-4 w-4" />
+                View My Orders
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
