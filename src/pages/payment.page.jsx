@@ -20,7 +20,9 @@ export default function PaymentPage() {
     if (!orderId) {
       toast.error("No order found. Please complete checkout first.");
       navigate('/shop/checkout');
+      return;
     }
+    console.log("Found order ID in payment page:", orderId);
   }, [navigate]);
   
   const totalPrice = cart.reduce(
@@ -39,12 +41,15 @@ export default function PaymentPage() {
         throw new Error("No order found. Please complete checkout first.");
       }
 
+      console.log("Processing payment for order:", orderId);
+
       // Update order status to PAID
-      await updateOrder({ 
+      const result = await updateOrder({ 
         orderId,
-        type: "succeeded",
-        data: { orderId }
+        type: "succeeded"
       }).unwrap();
+
+      console.log("Payment processed successfully:", result);
 
       // Clear the cart
       dispatch(clearCart());

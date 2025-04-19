@@ -42,23 +42,24 @@ export const Api = createApi({
       }),
     }),
     updateOrder: builder.mutation({
-      query: ({ orderId, type, data }) => ({
+      query: ({ orderId, type }) => ({
         url: `payments/webhook`,
         method: "POST",
         body: {
           type,
-          data: {
-            orderId,
-            ...data
-          }
-        },
+          data: { orderId }
+        }
       }),
+      // Invalidate relevant queries after mutation
+      invalidatesTags: (result, error, { orderId }) => [
+        { type: 'Order', id: orderId },
+        'Orders'
+      ]
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
+// Export hooks for usage in functional components
 export const {
   useGetProductsQuery,
   useGetCategoriesQuery,
