@@ -36,7 +36,7 @@ function ProductCard(props) {
   };
 
   const handleRemove = (e) => {
-    e.preventDefault(); // Prevent navigating when clicking the button
+    e.preventDefault(); 
     dispatch(removeFromCart(props._id));
   };
 
