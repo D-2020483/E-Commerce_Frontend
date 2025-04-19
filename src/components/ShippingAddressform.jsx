@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 import { useCreateOrderMutation } from "@/lib/api";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 
 const formSchema = z.object({
   line_1: z.string().min(1, "Address line 1 is required"),
@@ -30,6 +31,7 @@ const formSchema = z.object({
 
 const ShippingAddressForm = ({ cart }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isSignedIn, getToken } = useAuth();
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -45,12 +47,13 @@ const ShippingAddressForm = ({ cart }) => {
     setIsSubmitting(true);
   
     try {
-      // Check if user is authenticated
-      const token = await window.Clerk?.Session?.getToken();
-      if (!token) {
+      if (!isSignedIn) {
         toast.error("Please sign in to place an order");
         return;
       }
+
+      const token = await getToken();
+      console.log("Authentication token present:", !!token);
 
       const formattedCart = cart.map((item) => ({
         product: {
@@ -91,7 +94,6 @@ const ShippingAddressForm = ({ cart }) => {
       console.error("Failed to create order:", error);
       const errorMessage = error.data?.message || error.message || "Failed to create order. Please try again.";
       toast.error(errorMessage);
-      // Log detailed error information
       console.error("Error details:", {
         status: error.status,
         data: error.data,

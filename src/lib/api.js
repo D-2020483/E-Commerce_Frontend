@@ -1,19 +1,22 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-
 export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({ 
-    baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/" }),
+    baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/",
     prepareHeaders: async (headers, { getState }) => {
-    const token = await window.Clerk?.Session?.getToken();
-    console.log(token);
-
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-    return headers;
-  },
+      try {
+        const token = localStorage.getItem('clerk-db-jwt');
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
+        return headers;
+      } catch (error) {
+        console.error('Error setting auth header:', error);
+        return headers;
+      }
+    },
+  }),
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => `products`,
