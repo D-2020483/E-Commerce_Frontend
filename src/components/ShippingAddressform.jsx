@@ -45,6 +45,13 @@ const ShippingAddressForm = ({ cart }) => {
     setIsSubmitting(true);
   
     try {
+      // Check if user is authenticated
+      const token = await window.Clerk?.Session?.getToken();
+      if (!token) {
+        toast.error("Please sign in to place an order");
+        return;
+      }
+
       const formattedCart = cart.map((item) => ({
         product: {
           _id: item.product._id,
@@ -82,7 +89,15 @@ const ShippingAddressForm = ({ cart }) => {
       }
     } catch (error) {
       console.error("Failed to create order:", error);
-      toast.error("Failed to create order. Please try again.");
+      const errorMessage = error.data?.message || error.message || "Failed to create order. Please try again.";
+      toast.error(errorMessage);
+      // Log detailed error information
+      console.error("Error details:", {
+        status: error.status,
+        data: error.data,
+        message: error.message,
+        stack: error.stack
+      });
     } finally {
       setIsSubmitting(false);
     }
