@@ -70,25 +70,26 @@ const ShippingAddressForm = ({ cart }) => {
         return;
       }
 
-      const formattedCart = validCartItems.map(item => {
-        const product = item.product;
-        return {
-          product: {
-            _id: product._id.toString(),
-            name: product.name.toString(),
-            price: product.price.toString(),
-            image: product.image.toString(),
-            description: (product.description || "No description available").toString(),
-          },
-          quantity: parseInt(item.quantity, 10)
-        };
-      });
+      const formattedCart = validCartItems.map(item => ({
+        product: {
+          _id: item.product._id.toString(),
+          name: item.product.name.toString(),
+          price: item.product.price.toString(),
+          image: item.product.image.toString(),
+          description: (item.product.description || "No description available").toString(),
+          variant: {
+            name: 'default',
+            stockAtPurchase: item.product.stock || 0
+          }
+        },
+        quantity: parseInt(item.quantity, 10)
+      }));
 
       const payload = {
         items: formattedCart,
         shippingAddress: {
           line_1: values.line_1.trim(),
-          line_2: (values.line_2 || "Not provided").trim(),
+          line_2: values.line_2 ? values.line_2.trim() : "Not provided",
           city: values.city.trim(),
           state: values.state.trim(),
           zip_code: values.zip_code.trim(),
