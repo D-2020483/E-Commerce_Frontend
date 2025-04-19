@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
@@ -17,6 +17,7 @@ export default function PaymentPage() {
   // Check for valid order ID when component mounts
   useEffect(() => {
     const orderId = sessionStorage.getItem('currentOrderId');
+    console.log("Current orderId in payment:", orderId);
     if (!orderId) {
       toast.error("No order found. Please complete checkout first.");
       navigate('/shop/checkout');
@@ -35,6 +36,7 @@ export default function PaymentPage() {
       setIsProcessing(true);
       
       const orderId = sessionStorage.getItem('currentOrderId');
+      console.log("Processing payment for order:", orderId);
       
       if (!orderId) {
         toast.error("No order found. Please complete checkout first.");
@@ -54,11 +56,13 @@ export default function PaymentPage() {
         icon: <CheckCircle className="w-5 h-5" />,
       });
       
-      // Clear the order ID from session storage as it's no longer needed
-      sessionStorage.removeItem('currentOrderId');
+      console.log("Payment successful, navigating to complete page");
       
       // Navigate to complete page with orderId parameter
       navigate(`/shop/complete?orderId=${orderId}`);
+      
+      // Clear the order ID from session storage after successful navigation
+      sessionStorage.removeItem('currentOrderId');
     } catch (error) {
       console.error("Payment processing error:", error);
       toast.error("Failed to process payment. Please try again.");
