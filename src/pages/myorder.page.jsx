@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { useGetOrdersByUserIdQuery } from "@/lib/api"
 import { ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 
 export default function MyOrdersPage() {
   const { isLoaded, isSignedIn } = useUser();
