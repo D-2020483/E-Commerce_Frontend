@@ -71,7 +71,7 @@ export default function AccountPage() {
           </TabsTrigger>
           <TabsTrigger value="orders">
             <PackageIcon className="mr-2 h-4 w-4" />
-            My Orders
+            Logout
           </TabsTrigger>
         </TabsList>
 
