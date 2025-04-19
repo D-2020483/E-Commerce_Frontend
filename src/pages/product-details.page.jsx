@@ -2,16 +2,19 @@ import React from 'react';
 import { useParams } from 'react-router';
 import { useGetProductQuery } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/lib/features/cart/cartSlice';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { Link } from 'react-router';
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
-  const { data: product, isLoading, error } = useGetProductQuery(productId);
+  const { data: product, isLoading, error, refetch } = useGetProductQuery(productId, {
+    refetchOnMountOrArgChange: true
+  });
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.value);
 
@@ -60,9 +63,19 @@ export default function ProductDetailsPage() {
   if (error) {
     return (
       <main className="container mx-auto px-4 py-8">
-        <div className="text-center text-red-500">
-          <h2 className="text-2xl font-bold">Error loading product</h2>
-          <p>{error.message || 'Failed to load product details'}</p>
+        <div className="text-center">
+          <div className="max-w-md mx-auto space-y-4">
+            <h2 className="text-2xl font-bold text-red-500">Error loading product</h2>
+            <p className="text-muted-foreground">{error.message || 'Failed to load product details'}</p>
+            <div className="space-x-4">
+              <Button onClick={() => refetch()} variant="outline">
+                Try Again
+              </Button>
+              <Button asChild>
+                <Link to="/shop">Back to Shop</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
     );
@@ -72,7 +85,12 @@ export default function ProductDetailsPage() {
     return (
       <main className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold">Product not found</h2>
+          <div className="max-w-md mx-auto space-y-4">
+            <h2 className="text-2xl font-bold">Product not found</h2>
+            <Button asChild>
+              <Link to="/shop">Back to Shop</Link>
+            </Button>
+          </div>
         </div>
       </main>
     );
@@ -81,6 +99,15 @@ export default function ProductDetailsPage() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
+        <div className="mb-6">
+          <Button variant="ghost" asChild className="hover:bg-transparent">
+            <Link to="/shop" className="flex items-center gap-2 text-muted-foreground">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Shop
+            </Link>
+          </Button>
+        </div>
+        
         <div className="grid md:grid-cols-2 gap-8">
           {/* Product Image */}
           <div className="bg-white rounded-lg p-4">
