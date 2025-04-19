@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useUser, useAuth } from "@clerk/clerk-react"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
