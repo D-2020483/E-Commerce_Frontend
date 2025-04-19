@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router";
 import { useCreateOrderMutation } from "@/lib/api";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
 const formSchema = z.object({
@@ -38,8 +38,13 @@ const ShippingAddressForm = ({ cart }) => {
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
 
+  // Debug log to see cart structure
+  useEffect(() => {
+    console.log("Current cart state:", cart);
+  }, [cart]);
+
   async function handleSubmit(values) {
-    if (cart.length === 0) {
+    if (!cart || !Array.isArray(cart) || cart.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
@@ -52,93 +57,63 @@ const ShippingAddressForm = ({ cart }) => {
         return;
       }
 
-      const token = await getToken();
-      console.log("Authentication token present:", !!token);
+      // Validate and format cart items
+      const validCartItems = cart.filter(item => 
+        item && 
+        item.product && 
+        typeof item.product === 'object' &&
+        item.product._id &&
+        item.quantity
+      );
 
-      // Validate cart items
-      if (!Array.isArray(cart) || cart.some(item => !item.product?._id || !item.quantity)) {
-        console.error("Invalid cart structure:", cart);
-        toast.error("Invalid cart data");
+      if (validCartItems.length === 0) {
+        toast.error("No valid items in cart");
         return;
       }
 
-      // Log the raw cart data for debugging
-      console.log("Raw cart item example:", cart[0]);
+      const formattedCart = validCartItems.map(item => {
+        const product = item.product;
+        return {
+          product: {
+            _id: product._id.toString(),
+            name: product.name.toString(),
+            price: product.price.toString(),
+            image: product.image.toString(),
+            description: (product.description || "No description available").toString(),
+          },
+          quantity: parseInt(item.quantity, 10)
+        };
+      });
 
-      const formattedCart = cart.map((item) => ({
-        product: {
-          _id: String(item.product._id),
-          name: String(item.product.name),
-          price: String(item.product.price), 
-          image: String(item.product.image),
-          description: String(item.product.description || "No description available"),
-        },
-        quantity: Number(item.quantity), 
-      }));
-  
       const payload = {
         items: formattedCart,
         shippingAddress: {
-          line_1: String(values.line_1).trim(),
-          line_2: String(values.line_2 || "Not provided").trim(),
-          city: String(values.city).trim(),
-          state: String(values.state).trim(),
-          zip_code: String(values.zip_code).trim(),
-          phone: String(values.phone).trim(),
+          line_1: values.line_1.trim(),
+          line_2: (values.line_2 || "Not provided").trim(),
+          city: values.city.trim(),
+          state: values.state.trim(),
+          zip_code: values.zip_code.trim(),
+          phone: values.phone.trim(),
         },
       };
-  
-      // Detailed validation logging
-      console.log("Raw cart data:", JSON.stringify(cart, null, 2));
-      console.log("Formatted cart:", JSON.stringify(formattedCart, null, 2));
-      console.log("Full payload:", JSON.stringify(payload, null, 2));
-      
-      // Validate payload structure matches backend schema
-      const validationCheck = {
-        hasValidItems: payload.items.every(item => 
-          item.product._id && 
-          item.product.name && 
-          item.product.price && 
-          item.product.image && 
-          item.product.description &&
-          typeof item.quantity === 'number'
-        ),
-        hasValidAddress: Boolean(
-          payload.shippingAddress.line_1 &&
-          payload.shippingAddress.line_2 &&
-          payload.shippingAddress.city &&
-          payload.shippingAddress.state &&
-          payload.shippingAddress.zip_code &&
-          payload.shippingAddress.phone
-        )
-      };
-      
-      console.log("Validation check:", validationCheck);
 
-      if (!validationCheck.hasValidItems || !validationCheck.hasValidAddress) {
-        throw new Error("Invalid payload structure");
-      }
-  
+      // Log the final payload
+      console.log("Sending order payload:", JSON.stringify(payload, null, 2));
+
       const response = await createOrder(payload).unwrap();
-  
-      console.log("API Response:", response);
-  
-      if (response._id) {
+      console.log("Order creation response:", response);
+
+      if (response && response._id) {
         sessionStorage.setItem("currentOrderId", response._id);
         navigate("/shop/payment");
       } else {
-        throw new Error("Order ID not found in response");
+        console.error("Invalid response:", response);
+        throw new Error("Invalid response from server");
       }
     } catch (error) {
-      console.error("Failed to create order:", error);
+      console.error("Order creation error:", error);
       const errorMessage = error.data?.message || error.message || "Failed to create order. Please try again.";
       toast.error(errorMessage);
-      console.error("Error details:", {
-        status: error.status,
-        data: error.data,
-        message: error.message,
-        stack: error.stack
-      });
     } finally {
       setIsSubmitting(false);
     }
