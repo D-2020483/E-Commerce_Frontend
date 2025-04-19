@@ -1,14 +1,28 @@
-import React from "react"
-import { useUser } from "@clerk/clerk-react"
+import React, { useEffect } from "react"
+import { useUser, useAuth } from "@clerk/clerk-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { useGetOrdersByUserIdQuery } from "@/lib/api"
 import { ShoppingBag } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 export default function MyOrdersPage() {
   const { isLoaded, isSignedIn } = useUser();
-  const { data: orders, isLoading, error } = useGetOrdersByUserIdQuery();
+  const { getToken } = useAuth();
+  const navigate = useNavigate();
+  const { data: orders, isLoading, error, refetch } = useGetOrdersByUserIdQuery(undefined, {
+    // Skip the query if not signed in
+    skip: !isSignedIn
+  });
+
+  // Refetch orders when auth state changes
+  useEffect(() => {
+    if (isSignedIn) {
+      refetch();
+    }
+  }, [isSignedIn, refetch]);
 
   if (!isLoaded || isLoading) {
     return (
@@ -28,18 +42,33 @@ export default function MyOrdersPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="text-center mt-20">
-        <h2 className="text-2xl font-semibold mb-4">Please sign in to view your orders</h2>
+      <div className="container mx-auto px-4 py-8 max-w-4xl text-center">
+        <Card>
+          <CardContent className="p-8">
+            <h2 className="text-2xl font-semibold mb-4">Please sign in to view your orders</h2>
+            <Button onClick={() => navigate("/sign-in")}>
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center mt-20">
-        <h2 className="text-2xl font-semibold mb-4 text-red-500">
-          Error loading orders: {error.message}
-        </h2>
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-semibold mb-4 text-red-500">
+              Error loading orders
+            </h2>
+            <p className="text-muted-foreground mb-4">{error.message}</p>
+            <Button onClick={() => refetch()}>
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

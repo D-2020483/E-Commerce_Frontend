@@ -4,15 +4,20 @@ export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({ 
     baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/",
-    prepareHeaders: async (headers, { getState }) => {
+    prepareHeaders: async (headers) => {
       try {
-        const token = localStorage.getItem('clerk-db-jwt');
+        // Get token directly from Clerk session
+        const token = await window.Clerk?.session?.getToken();
+        console.log("Auth token present:", !!token);
+        
         if (token) {
           headers.set("Authorization", `Bearer ${token}`);
+        } else {
+          console.warn("No auth token available");
         }
         return headers;
       } catch (error) {
-        console.error('Error setting auth header:', error);
+        console.error('Error getting auth token:', error);
         return headers;
       }
     },
@@ -28,7 +33,10 @@ export const Api = createApi({
       query: (id) => `orders/${id}`,
     }),
     getOrdersByUserId: builder.query({
-      query: () => `orders/user/my-orders`,
+      query: () => ({
+        url: `orders/user/my-orders`,
+        method: 'GET',
+      }),
     }),
     createOrder: builder.mutation({
       query: (body) => ({
