@@ -6,12 +6,10 @@ import { Badge } from "@/components/ui/badge"
 import { useGetOrdersByUserIdQuery } from "@/lib/api"
 import { ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useNavigate } from "react-router"
 
 export default function MyOrdersPage() {
   const { isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
-  const navigate = useNavigate();
   
   // Set token in localStorage when auth state changes
   useEffect(() => {
@@ -30,13 +28,6 @@ export default function MyOrdersPage() {
     // Skip the query if not signed in
     skip: !isSignedIn
   });
-
-  // Refetch orders when auth state changes
-  useEffect(() => {
-    if (isSignedIn) {
-      refetch();
-    }
-  }, [isSignedIn, refetch]);
 
   if (!isLoaded || isLoading) {
     return (
@@ -60,7 +51,7 @@ export default function MyOrdersPage() {
         <Card>
           <CardContent className="p-8">
             <h2 className="text-2xl font-semibold mb-4">Please sign in to view your orders</h2>
-            <Button onClick={() => navigate("/sign-in")}>
+            <Button onClick={() => window.location.href = "/sign-in"}>
               Sign In
             </Button>
           </CardContent>

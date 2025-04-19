@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useNavigate } from "react-router"
 import {
   User2Icon,
   MailIcon,
@@ -17,7 +16,6 @@ import {
 export default function AccountPage() {
   const { isLoaded, isSignedIn, user } = useUser()
   const { signOut } = useAuth()
-  const navigate = useNavigate()
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   // Apply dark mode class to the body
@@ -182,7 +180,7 @@ export default function AccountPage() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => navigate("/my-orders")}
+                onClick={() => window.location.href = "/my-orders"}
               >
                 <PackageIcon className="mr-2 h-4 w-4" />
                 View My Orders
