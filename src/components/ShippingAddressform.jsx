@@ -96,47 +96,19 @@ const ShippingAddressForm = ({ cart }) => {
         },
       };
 
-      console.log("Attempting to create order with payload:", JSON.stringify(payload, null, 2));
+      console.log("Sending order payload:", JSON.stringify(payload, null, 2));
 
-      try {
-        const response = await createOrder(payload).unwrap();
-        console.log("Raw server response:", response);
+      const response = await createOrder(payload).unwrap();
+      console.log("Order creation response:", response);
 
-        // Check if we have a valid response
-        if (response === null || response === undefined) {
-          throw new Error("Server returned empty response");
-        }
-
-        // Check response structure
-        if (typeof response !== 'object') {
-          throw new Error(`Unexpected response type: ${typeof response}`);
-        }
-
-        // Log the full response for debugging
-        console.log("Full server response:", {
-          status: response.status,
-          data: response.data,
-          id: response._id,
-          raw: response
-        });
-
-        if (response._id) {
-          console.log("Order created successfully with ID:", response._id);
-          sessionStorage.setItem("currentOrderId", response._id);
-          navigate("/shop/payment");
-        } else {
-          throw new Error("Response missing order ID");
-        }
-      } catch (apiError) {
-        console.error("API Error Details:", {
-          name: apiError.name,
-          message: apiError.message,
-          status: apiError.status,
-          data: apiError.data,
-          stack: apiError.stack
-        });
-        throw apiError;
+      if (!response || !response._id) {
+        throw new Error("Invalid response from server - missing order ID");
       }
+
+      // Store the order ID and navigate to payment
+      sessionStorage.setItem("currentOrderId", response._id);
+      toast.success("Order created successfully!");
+      navigate("/shop/payment");
     } catch (error) {
       console.error("Order creation failed:", {
         error: error,
