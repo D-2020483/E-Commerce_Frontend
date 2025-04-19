@@ -123,6 +123,9 @@ export default function MyOrdersPage() {
                           <div>
                             <p className="font-medium">{item.product.name}</p>
                             <p className="text-muted-foreground">Qty: {item.quantity}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Stock at purchase: {item.product.variant?.stockAtPurchase || 'N/A'}
+                            </p>
                           </div>
                           <p className="font-medium">
                             ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}

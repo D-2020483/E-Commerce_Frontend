@@ -11,6 +11,24 @@ export default function CheckoutPage() {
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2)
   }
+
+  const handleOrderCreation = (formData) => {
+    const orderData = {
+      items: cart.map(item => ({
+        product: {
+          ...item.product,
+          variant: {
+            name: item.product.variantName || 'default',
+            stockAtPurchase: item.product.variants?.[0]?.stock || 0
+          }
+        },
+        quantity: item.quantity
+      })),
+      shippingAddress: formData
+    }
+    // Add logic to handle order creation with orderData
+  }
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
