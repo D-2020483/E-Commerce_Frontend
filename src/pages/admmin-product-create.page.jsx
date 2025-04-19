@@ -19,7 +19,10 @@ const AdminCreateProductPage = () => {
         description: '',
         image: '',
         categoryId: '',
-        variants: [{ name: 'default', stock: 0 }]
+        variants: [{ 
+            name: 'default', 
+            stock: 0 
+        }]
     });
     const [loading, setLoading] = useState(true);
 
@@ -79,19 +82,22 @@ const AdminCreateProductPage = () => {
                 return;
             }
 
+            // Ensure the variant is properly structured
+            const productData = {
+                ...newProduct,
+                price: parseFloat(newProduct.price),
+                variants: [{
+                    name: 'default',
+                    stock: parseInt(newProduct.variants[0].stock)
+                }]
+            };
+
             const response = await fetch(`${API_BASE_URL}/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    ...newProduct,
-                    price: parseFloat(newProduct.price),
-                    variants: [{ 
-                        name: 'default', 
-                        stock: parseInt(newProduct.variants[0].stock) 
-                    }]
-                }),
+                body: JSON.stringify(productData),
             });
 
             if (!response.ok) {
@@ -107,7 +113,10 @@ const AdminCreateProductPage = () => {
                 description: '',
                 image: '',
                 categoryId: '',
-                variants: [{ name: 'default', stock: 0 }]
+                variants: [{ 
+                    name: 'default', 
+                    stock: 0 
+                }]
             });
             
             // Refresh products list
@@ -128,14 +137,23 @@ const AdminCreateProductPage = () => {
                 return;
             }
 
-            const response = await fetch(`${API_BASE_URL}/products/${productId}/stock`, {
-                method: 'PUT',
+            // Find the product to update
+            const product = products.find(p => p._id === productId);
+            if (!product) {
+                toast.error('Product not found');
+                return;
+            }
+
+            const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    variantName: 'default',
-                    stock: stock
+                    variants: [{
+                        name: 'default',
+                        stock: stock
+                    }]
                 }),
             });
 
@@ -147,14 +165,17 @@ const AdminCreateProductPage = () => {
             toast.success('Stock updated successfully');
             
             // Update the product in the local state
-            setProducts(products.map(product => {
-                if (product._id === productId) {
+            setProducts(products.map(p => {
+                if (p._id === productId) {
                     return {
-                        ...product,
-                        variants: [{ name: 'default', stock: stock }]
+                        ...p,
+                        variants: [{
+                            name: 'default',
+                            stock: stock
+                        }]
                     };
                 }
-                return product;
+                return p;
             }));
         } catch (error) {
             console.error('Error updating stock:', error);
