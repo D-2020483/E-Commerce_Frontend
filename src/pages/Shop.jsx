@@ -92,6 +92,19 @@ const Shop = () => {
 
   const dispatch = useDispatch();
 
+  // Function to refresh products
+  const refreshProducts = async () => {
+    try {
+      const productsResponse = await fetch("https://fed-storefront-backend-dinithi.onrender.com/api/products");
+      if (!productsResponse.ok) throw new Error(`HTTP Error! Status: ${productsResponse.status}`);
+      const productsData = await productsResponse.json();
+      setProducts(productsData);
+      setFilteredProducts(productsData);
+    } catch (error) {
+      console.error('Error refreshing products:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchProductsAndCategories = async () => {
       try {
@@ -117,6 +130,17 @@ const Shop = () => {
     };
 
     fetchProductsAndCategories();
+
+    // Listen for stock updates from the admin page
+    const handleRefresh = () => {
+      refreshProducts();
+    };
+
+    window.addEventListener('refreshProducts', handleRefresh);
+
+    return () => {
+      window.removeEventListener('refreshProducts', handleRefresh);
+    };
   }, []);
 
   const filterAndSortProducts = (categoryId, order) => {
