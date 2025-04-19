@@ -41,9 +41,9 @@ const ShippingAddressForm = ({ cart }) => {
       toast.error("Your cart is empty");
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
       const formattedCart = cart.map((item) => ({
         product: {
@@ -55,7 +55,7 @@ const ShippingAddressForm = ({ cart }) => {
         },
         quantity: item.quantity,
       }));
-
+  
       const payload = {
         items: formattedCart,
         shippingAddress: {
@@ -67,15 +67,19 @@ const ShippingAddressForm = ({ cart }) => {
           phone: values.phone,
         },
       };
-
+  
       console.log("Payload being sent to createOrder:", payload);
-
+  
       const response = await createOrder(payload).unwrap();
-
+  
       console.log("API Response:", response);
-
-      sessionStorage.setItem("currentOrderId", response._id);
-      navigate("/shop/payment");
+  
+      if (response._id) {
+        sessionStorage.setItem("currentOrderId", response._id);
+        navigate("/shop/payment");
+      } else {
+        throw new Error("Order ID not found in response");
+      }
     } catch (error) {
       console.error("Failed to create order:", error);
       toast.error("Failed to create order. Please try again.");
