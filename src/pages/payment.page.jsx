@@ -5,7 +5,7 @@ import { clearCart } from "@/lib/features/cartSlice"
 import { useSelector, useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import { useUpdateOrderMutation } from "@/lib/api"
 
 export default function PaymentPage() {
@@ -17,7 +17,6 @@ export default function PaymentPage() {
   
   useEffect(() => {
     const orderId = sessionStorage.getItem('currentOrderId');
-    console.log("Current orderId in payment:", orderId);
     if (!orderId) {
       toast.error("No order found. Please complete checkout first.");
       navigate('/shop/checkout');
@@ -25,7 +24,7 @@ export default function PaymentPage() {
   }, [navigate]);
   
   const totalPrice = cart.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
+    (acc, item) => acc + (parseFloat(item.product.price) * item.quantity),
     0
   );
 
@@ -36,12 +35,8 @@ export default function PaymentPage() {
       setIsProcessing(true);
       
       const orderId = sessionStorage.getItem('currentOrderId');
-      console.log("Processing payment for order:", orderId);
-      
       if (!orderId) {
-        toast.error("No order found. Please complete checkout first.");
-        navigate('/shop/checkout');
-        return;
+        throw new Error("No order found. Please complete checkout first.");
       }
 
       // Update order status to PAID
@@ -59,9 +54,7 @@ export default function PaymentPage() {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
-      
-      console.log("Payment successful, navigating to complete page");
-      
+
       // Navigate to complete page with orderId parameter
       navigate(`/shop/complete?orderId=${orderId}`);
       
@@ -69,7 +62,17 @@ export default function PaymentPage() {
       sessionStorage.removeItem('currentOrderId');
     } catch (error) {
       console.error("Payment processing error:", error);
-      toast.error("Failed to process payment. Please try again.");
+      let errorMessage = "Failed to process payment. ";
+      if (error.data?.message) {
+        errorMessage += error.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      }
+      toast.error(errorMessage);
+      
+      if (error.status === 404) {
+        navigate('/shop/checkout');
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -101,7 +104,7 @@ export default function PaymentPage() {
                     <div className="text-sm text-muted-foreground">
                       <span>Quantity: {item.quantity}</span>
                       <span className="ml-2">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   </div>

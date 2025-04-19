@@ -41,6 +41,19 @@ export const Api = createApi({
         body,
       }),
     }),
+    updateOrder: builder.mutation({
+      query: ({ orderId, type, data }) => ({
+        url: `payments/webhook`,
+        method: "POST",
+        body: {
+          type,
+          data: {
+            orderId,
+            ...data
+          }
+        },
+      }),
+    }),
   }),
 });
 
@@ -53,4 +66,5 @@ export const {
   useCreateOrderMutation,
   useGetOrderQuery,
   useGetOrdersByUserIdQuery,
+  useUpdateOrderMutation,
 } = Api;
