@@ -11,16 +11,16 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import CartPage from './pages/cart.page.jsx';
 import CheckoutPage from './pages/checkout.page.jsx';
 import PaymentPage from './pages/payment.page.jsx';
-import AdminCreateProductPage from './pages/admmin-product-create.page.jsxz';
+import AdminCreateProductPage from './pages/admmin-product-create.page.jsx';
 import Shop from './pages/Shop';
 import MyOrdersPage from './pages/myorder.page.jsx';
+import ProductDetailsPage from './pages/product-details.page.jsx';
 
 import { store } from "@/lib/store";
 import {Provider} from "react-redux";
 import RootLayout from './layouts/root.layout.jsx';
 import AccountPage from './pages/account.page.jsx';
 import CompletePage from './pages/complete.page.jsx';
-
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -42,6 +42,7 @@ createRoot(document.getElementById('root')).render(
            <Route path="/shop/complete" element={<CompletePage/>}/>
            <Route path="/admin/products/create" element={<AdminCreateProductPage/>}/>
            <Route path="/shop" element={<Shop />} />
+           <Route path="/shop/:productId" element={<ProductDetailsPage />} />
            <Route path="/myorders" element={<MyOrdersPage/>}/>
         </Route> 
         <Route path="/sign-up" element={<SignUpPage/>}/>
