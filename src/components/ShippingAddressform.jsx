@@ -18,7 +18,7 @@ import { useState } from "react";
 
 const formSchema = z.object({
   line_1: z.string().min(1, "Address line 1 is required"),
-  line_2: z.string().min(1, "Address line 2 is required"),
+  line_2: z.string().optional(),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State/Province is required"),
   zip_code: z.string().min(1, "Zip Code is required"),
@@ -56,17 +56,23 @@ const ShippingAddressForm = ({ cart }) => {
         quantity: item.quantity,
       }));
 
-      const response = await createOrder({
+      const payload = {
         items: formattedCart,
         shippingAddress: {
           line_1: values.line_1,
-          line_2: values.line_2,
+          line_2: values.line_2 || "",
           city: values.city,
           state: values.state,
           zip_code: values.zip_code,
           phone: values.phone,
         },
-      }).unwrap();
+      };
+
+      console.log("Payload being sent to createOrder:", payload);
+
+      const response = await createOrder(payload).unwrap();
+
+      console.log("API Response:", response);
 
       sessionStorage.setItem("currentOrderId", response._id);
       navigate("/shop/payment");
