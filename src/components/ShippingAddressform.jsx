@@ -38,7 +38,6 @@ const ShippingAddressForm = ({ cart }) => {
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
 
-  // Debug log to see cart structure
   useEffect(() => {
     console.log("Current cart state:", cart);
   }, [cart]);
@@ -97,22 +96,65 @@ const ShippingAddressForm = ({ cart }) => {
         },
       };
 
-      // Log the final payload
-      console.log("Sending order payload:", JSON.stringify(payload, null, 2));
+      console.log("Attempting to create order with payload:", JSON.stringify(payload, null, 2));
 
-      const response = await createOrder(payload).unwrap();
-      console.log("Order creation response:", response);
+      try {
+        const response = await createOrder(payload).unwrap();
+        console.log("Raw server response:", response);
 
-      if (response && response._id) {
-        sessionStorage.setItem("currentOrderId", response._id);
-        navigate("/shop/payment");
-      } else {
-        console.error("Invalid response:", response);
-        throw new Error("Invalid response from server");
+        // Check if we have a valid response
+        if (response === null || response === undefined) {
+          throw new Error("Server returned empty response");
+        }
+
+        // Check response structure
+        if (typeof response !== 'object') {
+          throw new Error(`Unexpected response type: ${typeof response}`);
+        }
+
+        // Log the full response for debugging
+        console.log("Full server response:", {
+          status: response.status,
+          data: response.data,
+          id: response._id,
+          raw: response
+        });
+
+        if (response._id) {
+          console.log("Order created successfully with ID:", response._id);
+          sessionStorage.setItem("currentOrderId", response._id);
+          navigate("/shop/payment");
+        } else {
+          throw new Error("Response missing order ID");
+        }
+      } catch (apiError) {
+        console.error("API Error Details:", {
+          name: apiError.name,
+          message: apiError.message,
+          status: apiError.status,
+          data: apiError.data,
+          stack: apiError.stack
+        });
+        throw apiError;
       }
     } catch (error) {
-      console.error("Order creation error:", error);
-      const errorMessage = error.data?.message || error.message || "Failed to create order. Please try again.";
+      console.error("Order creation failed:", {
+        error: error,
+        name: error.name,
+        message: error.message,
+        status: error?.status,
+        data: error?.data
+      });
+      
+      let errorMessage = "Failed to create order. ";
+      if (error.data?.message) {
+        errorMessage += error.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += "Please try again.";
+      }
+      
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
