@@ -15,8 +15,12 @@ export default function MyOrdersPage() {
   useEffect(() => {
     const updateToken = async () => {
       if (isSignedIn) {
-        const token = await getToken();
-        localStorage.setItem('clerk-token', token);
+        try {
+          const token = await getToken();
+          localStorage.setItem('clerk-token', token);
+        } catch (error) {
+          console.error('Error getting auth token:', error);
+        }
       } else {
         localStorage.removeItem('clerk-token');
       }
@@ -25,9 +29,16 @@ export default function MyOrdersPage() {
   }, [isSignedIn, getToken]);
 
   const { data: orders, isLoading, error, refetch } = useGetOrdersByUserIdQuery(undefined, {
-    // Skip the query if not signed in
-    skip: !isSignedIn
+    skip: !isSignedIn || !isLoaded,
+    refetchOnMountOrArgChange: true
   });
+
+  // Refetch orders when auth state changes
+  useEffect(() => {
+    if (isSignedIn && isLoaded) {
+      refetch();
+    }
+  }, [isSignedIn, isLoaded, refetch]);
 
   if (!isLoaded || isLoading) {
     return (

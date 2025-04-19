@@ -6,7 +6,6 @@ export const Api = createApi({
     baseUrl: "https://fed-storefront-backend-dinithi.onrender.com/api/",
     prepareHeaders: async (headers, { getState }) => {
       try {
-        // The token will be passed through the component
         const token = localStorage.getItem('clerk-token');
         if (token) {
           headers.set("Authorization", `Bearer ${token}`);
@@ -33,6 +32,11 @@ export const Api = createApi({
     }),
     getOrdersByUserId: builder.query({
       query: () => `orders/user/my-orders`,
+      // Add retry logic for auth errors
+      extraOptions: {
+        maxRetries: 3,
+        retryCondition: (error) => error.status === 401
+      }
     }),
     createOrder: builder.mutation({
       query: (body) => ({
