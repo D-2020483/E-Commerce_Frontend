@@ -6,8 +6,7 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 import { ShoppingCart, CheckCircle } from "lucide-react"
-import { useNavigate } from "react-router"
-
+import { useNavigate } from "react-router-dom"
 
 export default function PaymentPage() {
   const cart = useSelector((state) => state.cart.value);
@@ -43,11 +42,14 @@ export default function PaymentPage() {
         return;
       }
 
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       // Clear the cart
       dispatch(clearCart());
 
       // Show success toast
-      toast.success("Order Placed Successfully", {
+      toast.success("Payment Successful!", {
         description: `Order ID: ${orderId}, Total amount: $${totalPrice.toFixed(2)}`,
         icon: <CheckCircle className="w-5 h-5" />,
       });
@@ -58,8 +60,8 @@ export default function PaymentPage() {
       // Navigate to complete page with orderId parameter
       navigate(`/shop/complete?orderId=${orderId}`);
     } catch (error) {
-      console.error("Order placement error:", error);
-      toast.error("Failed to place the order. Please try again.");
+      console.error("Payment processing error:", error);
+      toast.error("Failed to process payment. Please try again.");
     } finally {
       setIsProcessing(false);
     }
@@ -71,7 +73,7 @@ export default function PaymentPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ShoppingCart className="w-6 h-6" />
-            Order Review
+            Payment Details
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -99,16 +101,22 @@ export default function PaymentPage() {
               ))}
             </div>
           )}
-        </CardContent>
-        <CardFooter className="flex justify-between items-center">
-          <div className="text-xl font-bold">
-            Total: ${totalPrice.toFixed(2)}
+          
+          <div className="mt-6 p-4 bg-muted rounded-lg">
+            <h3 className="font-semibold mb-2">Payment Summary</h3>
+            <div className="flex justify-between items-center">
+              <span>Total Amount:</span>
+              <span className="text-xl font-bold">${totalPrice.toFixed(2)}</span>
+            </div>
           </div>
+        </CardContent>
+        <CardFooter className="flex justify-end">
           <Button 
             onClick={handlePlaceOrder} 
-            disabled={cart.length === 0 || isProcessing}
+            disabled={isProcessing || cart.length === 0}
+            className="w-full md:w-auto"
           >
-            {isProcessing ? "Processing..." : "Place Order"}
+            {isProcessing ? "Processing Payment..." : "Complete Payment"}
           </Button>  
         </CardFooter>
       </Card>
