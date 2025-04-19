@@ -170,25 +170,6 @@ export default function AccountPage() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="orders">
-          <Card>
-            <CardHeader className="p-6">
-              <h2 className="text-xl font-bold">My Orders</h2>
-            </CardHeader>
-            <CardContent className="p-6">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => window.location.href = "/my-orders"}
-              >
-                <PackageIcon className="mr-2 h-4 w-4" />
-                View My Orders
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         {/* Logout Button */}
         <div className="mt-6">
           <Button
