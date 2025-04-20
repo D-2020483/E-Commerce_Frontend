@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Filter, ArrowUpDown, ShoppingCart } from 'lucide-react';
 import { addToCart } from '@/lib/features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
+import { toast } from "sonner";
 
 const ProductCard = ({
   _id, name, price, image, description, variants
@@ -31,9 +32,13 @@ const ProductCard = ({
           description,
         })
       );
-      alert('Product added to cart!');
+      toast.success("Added to cart", {
+        description: `${name} has been added to your cart`,
+      });
     } else {
-      alert('This product is out of stock!');
+      toast.error("Out of stock", {
+        description: "This product is currently out of stock",
+      });
     }
   };
   

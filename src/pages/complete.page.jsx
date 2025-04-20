@@ -35,7 +35,7 @@ function CompletePage() {
           <CardHeader className="flex flex-row items-center space-x-4 border-b pb-4">
             <CheckCircle2Icon className="h-10 w-10 text-green-500" />
             <CardTitle className="text-3xl font-bold text-primary">
-              Order Successful
+              complete purchase
             </CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-8 pt-6">
@@ -60,13 +60,16 @@ function CompletePage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 text-right">
+              <div className="mt-4 text-right space-y-2">
                 <p className="text-xl font-bold">
                   Total: $
                   {data.items.reduce(
                     (acc, item) => acc + item.product.price * item.quantity,
                     0
                   ).toFixed(2)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Payment Method: Cash on Delivery
                 </p>
               </div>
             </div>
