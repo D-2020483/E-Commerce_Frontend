@@ -35,7 +35,7 @@ function CompletePage() {
           <CardHeader className="flex flex-row items-center space-x-4 border-b pb-4">
             <CheckCircle2Icon className="h-10 w-10 text-green-500" />
             <CardTitle className="text-3xl font-bold text-primary">
-              complete purchase
+              Complete purchase
             </CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-8 pt-6">
@@ -68,7 +68,7 @@ function CompletePage() {
                     0
                   ).toFixed(2)}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground font-bold">
                   Payment Method: Cash on Delivery
                 </p>
               </div>
