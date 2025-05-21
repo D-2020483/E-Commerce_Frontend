@@ -68,7 +68,7 @@ function CompletePage() {
                     0
                   ).toFixed(2)}
                 </p>
-                <p className="text-sm text-muted-foreground font-bold">
+                <p className="text-sm text-muted-foreground font-extrabold">
                   Payment Method: Cash on Delivery
                 </p>
               </div>
